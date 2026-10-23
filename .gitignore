@@ -1,0 +1,19 @@
+# Generated dependencies, local controller state, and common editor artifacts.
+
+.DS_Store
+Thumbs.db
+desktop.ini
+
+.vscode/
+.idea/
+*.code-workspace
+
+npm-debug.log*
+node_modules/
+
+# Local controller state. The database is created on first start.
+data/
+
+# Test and browser artifacts.
+coverage/
+test-results/

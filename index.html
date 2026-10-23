@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HiddenWell</title>
+  <meta name="description" content="Learn cybersecurity by doing it. Short lessons and capture-the-flag challenges that run entirely in your browser, with nothing to install.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f4f6f8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#12171c" media="(prefers-color-scheme: dark)">
+  <meta property="og:title" content="HiddenWell">
+  <meta property="og:description" content="Cybersecurity lessons and CTF challenges that run in your browser.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/atkinson-hyperlegible-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/atkinson-hyperlegible-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/hiddenwell.css">
+  <script src="assets/js/theme.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="masthead">
+    <div class="masthead-inner">
+      <a class="wordmark" href="#/">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="5" fill="currentColor"/><path d="M9 11l5 5-5 5" fill="none" stroke="var(--paper)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><rect x="16" y="19" width="8" height="3" rx="1" fill="var(--mark)"/></svg>
+        HiddenWell
+      </a>
+      <button class="icon-button menu-button" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+      <nav class="nav" id="nav" aria-label="Main">
+        <a href="#/learn">Learn</a>
+        <a href="#/challenges">Challenges</a>
+        <a href="#/review">Review</a>
+        <a href="#/tools">Tools</a>
+        <a href="#/resources">Resources</a>
+        <a href="#/progress">Progress</a>
+      </nav>
+      <div class="masthead-tools">
+        <span class="score" id="score"></span>
+        <button class="icon-button" id="theme-toggle" type="button" aria-label="Switch colour theme">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="6.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 3.8a6.2 6.2 0 0 1 0 12.4z" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main" tabindex="-1"><p class="empty">Loading HiddenWell…</p></main>
+  <footer class="footer">
+    <div class="footer-inner">
+      <p>For learning and authorised practice only. Use these techniques only on systems you own or have written permission to test.</p>
+      <p><a href="#/about">How HiddenWell works</a></p>
+    </div>
+  </footer>
+  <div id="announcer" class="sr-only" role="status" aria-live="polite"></div>
+  <noscript><p style="padding:1rem">HiddenWell runs its labs in your browser, so it needs JavaScript turned on.</p></noscript>
+  <script type="module" src="assets/js/app.js"></script>
+</body>
+</html>

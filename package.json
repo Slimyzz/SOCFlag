@@ -1,0 +1,12 @@
+{
+  "name": "hiddenwell",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Learn cybersecurity by doing it: lessons and CTF challenges that run entirely in your browser.",
+  "scripts": {
+    "start": "node tools/serve.js",
+    "test": "node --test"
+  },
+  "engines": { "node": ">=20" }
+}
