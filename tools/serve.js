@@ -27,4 +27,4 @@ createServer(async (req, res) => {
   } catch {
     res.writeHead(404, { 'Content-Type': 'text/plain' }).end('Not found');
   }
-}).listen(port, '127.0.0.1', () => console.log(`HiddenWell running at http://localhost:${port}`));
+}).listen(port, '127.0.0.1', () => console.log(`SOCFlag running at http://localhost:${port}`));

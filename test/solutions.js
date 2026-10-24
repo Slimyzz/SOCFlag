@@ -1,7 +1,7 @@
 // The intended way to solve every challenge, written as code. The tests run
 // each one against the challenge's own workspace to prove it can be solved
 // that way, and the author scripts use them to derive answer flags (flags
-// such as HW{address_count} that come from the generated data).
+// such as SOC{address_count} that come from the generated data).
 import { createMachine } from '../assets/js/shell/index.js';
 import { runQuery } from '../assets/js/lib/query.js';
 import { parseMessage } from '../assets/js/lib/mime.js';
@@ -40,12 +40,12 @@ export function toolkit(spec) {
 export const solutions = {
   // Linux fundamentals
   'linux-hidden-note': ({ sh }) => sh('ls -a /srv/projects/handover; cat /srv/projects/handover/.handover'),
-  'linux-needle': ({ sh }) => sh('grep -r "HW{" /var/log/app'),
+  'linux-needle': ({ sh }) => sh('grep -r "SOC{" /var/log/app'),
   'linux-exact-size': ({ sh }) => sh('cat $(find /srv/backup -type f -size 1337c)'),
   'linux-locked-out': ({ sh }) => sh('chmod 600 ~/vault/key.txt; cat ~/vault/key.txt'),
   'linux-top-talker': ({ sh }) => {
     const [count, ip] = sh('grep " 401 " access.log | cut -d" " -f1 | sort | uniq -c | sort -rn | head -n 1').trim().split(/\s+/);
-    return `HW{${ip}_${count}}`;
+    return `SOC{${ip}_${count}}`;
   },
   'linux-firmware': ({ sh }) => sh('strings camera.bin | grep support_key | cut -d= -f2 | base64 -d'),
   'linux-history': ({ sh }) => sh('cat /home/jordan/.bash_history; cat /tmp/.cache-7f3a/q3-final.txt'),
@@ -56,117 +56,117 @@ export const solutions = {
   'logs-overnight': ({ query }) => {
     const top = query('index=linux action=failure | stats count by src_ip | sort -count | head 1')[0];
     const user = query(`index=linux action=failure src_ip=${top.src_ip} | top user limit=1`)[0].user;
-    return `HW{${top.src_ip}_${user}}`;
+    return `SOC{${top.src_ip}_${user}}`;
   },
   'logs-web-scanner': ({ query }) => {
     const scanner = query('index=web | stats count by src_ip | sort -count | head 1')[0].src_ip;
-    return `HW{${query(`index=web src_ip=${scanner} status=200 | table uri`)[0].uri}}`;
+    return `SOC{${query(`index=web src_ip=${scanner} status=200 | table uri`)[0].uri}}`;
   },
   'logs-spray': ({ query }) => {
     const row = query('index=windows EventCode=4625 | stats count, dc(user) as accounts by src_ip | sort -accounts | head 1')[0];
-    return `HW{${row.src_ip}_${row.accounts}}`;
+    return `SOC{${row.src_ip}_${row.accounts}}`;
   },
   'logs-got-in': ({ query }) => {
     const row = query('index=linux action=success auth_method=password NOT src_ip=10.*')[0];
-    return `HW{${row.user}_${hms(row._time)}}`;
+    return `SOC{${row.user}_${hms(row._time)}}`;
   },
   'logs-new-admin': ({ query }) => {
     const row = query('index=windows EventCode=4732 group=Administrators')[0];
-    return `HW{${row.user}_${row.subject_user}}`;
+    return `SOC{${row.user}_${row.subject_user}}`;
   },
   'logs-encoded': ({ query, decodeUtf16 }) => {
     const row = query('index=windows EventCode=4688 process=powershell.exe parent_process=winword.exe')[0];
     const decoded = decodeUtf16(row.command_line.split(' ').pop());
-    return `HW{${/https?:\/\/([^/]+)/.exec(decoded)[1]}}`;
+    return `SOC{${/https?:\/\/([^/]+)/.exec(decoded)[1]}}`;
   },
   'logs-beacon': ({ query }) => {
     const row = query('index=proxy | stats count, dc(src_host) as hosts, dc(bytes_out) as sizes by dest_host | where hosts = 1 | where sizes = 1 | sort -count | head 1')[0];
     const host = query(`index=proxy dest_host=${row.dest_host} | top src_host limit=1`)[0].src_host;
-    return `HW{${host}_${row.dest_host}}`;
+    return `SOC{${host}_${row.dest_host}}`;
   },
 
   // Email and phishing
-  'email-origin': ({ mail }) => `HW{${receivedIp(receivedHeaders(mail()[0]).at(-1))}}`,
+  'email-origin': ({ mail }) => `SOC{${receivedIp(receivedHeaders(mail()[0]).at(-1))}}`,
   'email-auth-verdict': ({ mail }) => {
     const fake = mail().find((m) => /dmarc=fail/.test(m.headers.find((h) => h.name === 'Authentication-Results').value));
-    return `HW{${receivedIp(receivedHeaders(fake)[0])}}`;
+    return `SOC{${receivedIp(receivedHeaders(fake)[0])}}`;
   },
   'email-lookalike': ({ mail }) => {
     // Cyrillic letters that look like Latin ones.
     const latin = { 'а': 'a', 'е': 'e', 'о': 'o', 'р': 'p', 'с': 'c' };
     const domains = mail().map((m) => /@([^>]+)>/.exec(m.from)[1]).filter((d) => d.startsWith('xn--'));
-    return `HW{${domains.find((d) => [...punycodeToUnicode(d)].map((ch) => latin[ch] ?? ch).join('') === 'larkfield.example')}}`;
+    return `SOC{${domains.find((d) => [...punycodeToUnicode(d)].map((ch) => latin[ch] ?? ch).join('') === 'larkfield.example')}}`;
   },
   'email-hidden-link': ({ mail }) => {
     const host = hrefs(mail()[0].html).map((u) => new URL(u).hostname).find((h) => !h.endsWith('larkfield.example'));
-    return `HW{${registered(host)}}`;
+    return `SOC{${registered(host)}}`;
   },
   'email-attachment-html': ({ tab, decodeBase64 }) => {
     const page = text(tab(0).mail()[0].attachments[0].bytes);
     const endpoint = decodeBase64(/endpoint: "([^"]+)"/.exec(page)[1]);
-    return `HW{${registered(new URL(endpoint).hostname)}}`;
+    return `SOC{${registered(new URL(endpoint).hostname)}}`;
   },
   'email-hash-lookup': ({ mail, sha256 }) => {
     const [intel, ...reported] = mail();
     const known = new Map(intel.text.split('\n').map((line) => line.split(/\s+/)).filter((parts) => parts[0]?.length === 64));
     const hit = reported.flatMap((m) => m.attachments).find((a) => known.has(sha256(a.bytes)));
-    return `HW{${known.get(sha256(hit.bytes))}_${hit.filename}}`;
+    return `SOC{${known.get(sha256(hit.bytes))}_${hit.filename}}`;
   },
   'email-campaign': ({ mail }) => {
     const deliveredBy = mail().map((m) => receivedIp(receivedHeaders(m)[0]));
-    return `HW{${deliveredBy.filter((ip) => ip === deliveredBy[0]).length}_${deliveredBy[0]}}`;
+    return `SOC{${deliveredBy.filter((ip) => ip === deliveredBy[0]).length}_${deliveredBy[0]}}`;
   },
 
   // File forensics
-  'forensics-mismatch': ({ sh }) => `HW{${sh('file DCIM/*.jpg | grep -v JPEG').split(':')[0].split('/').pop()}}`,
-  'forensics-author': ({ sh }) => `HW{${sh('exiftool board-paper-leaked.pdf | grep Author').split(': ')[1].trim()}}`,
-  'forensics-integrity': ({ sh }) => `HW{${sh('sha256sum -c MANIFEST.sha256 2>/dev/null | grep FAILED').split(':')[0]}}`,
+  'forensics-mismatch': ({ sh }) => `SOC{${sh('file DCIM/*.jpg | grep -v JPEG').split(':')[0].split('/').pop()}}`,
+  'forensics-author': ({ sh }) => `SOC{${sh('exiftool board-paper-leaked.pdf | grep Author').split(': ')[1].trim()}}`,
+  'forensics-integrity': ({ sh }) => `SOC{${sh('sha256sum -c MANIFEST.sha256 2>/dev/null | grep FAILED').split(':')[0]}}`,
   'forensics-known-bad': ({ sh }) => {
     const line = sh('cut -d" " -f1 /intel/campaign.sha256 > bad.txt; sha256sum Downloads/* | grep -f bad.txt').trim();
-    return `HW{${line.split('/').pop()}}`;
+    return `SOC{${line.split('/').pop()}}`;
   },
   'forensics-png-comment': ({ sh, decodeBase64 }) => {
     const b64 = sh('exiftool screenshot.png | grep Comment').split(':').slice(1).join(':').trim();
-    return /HW\{[^}]+\}/.exec(decodeBase64(b64))[0];
+    return /SOC\{[^}]+\}/.exec(decodeBase64(b64))[0];
   },
   'forensics-timeline': ({ sh }) => {
     const listing = sh('find /srv/www -type f -newermt "2026-03-13 02:41" ! -newermt "2026-03-13 03:00" | xargs ls -lt --full-time').trim().split('\n');
-    return `HW{${listing.at(-1).split(' ').pop()}}`;
+    return `SOC{${listing.at(-1).split(' ').pop()}}`;
   },
   'forensics-carve': ({ sh }) => {
     const offsets = sh('binwalk card.img').split('\n').filter((l) => /^\d/.test(l)).map((l) => [Number(l.split(/\s+/)[0]), l]);
     const start = offsets.findIndex(([, l]) => l.includes('PDF'));
     const [from, to] = [offsets[start][0], offsets[start + 1][0]];
     const hash = sh(`dd if=card.img of=doc.pdf bs=1 skip=${from} count=${to - from} 2>/dev/null; sha256sum doc.pdf`);
-    return `HW{${hash.slice(0, 12)}}`;
+    return `SOC{${hash.slice(0, 12)}}`;
   },
 
   // Network traffic analysis
-  'net-ftp-creds': ({ packets }) => `HW{${packets('ftp').map((p) => p.payload).find((s) => s.startsWith('PASS')).slice(5).trim()}}`,
+  'net-ftp-creds': ({ packets }) => `SOC{${packets('ftp').map((p) => p.payload).find((s) => s.startsWith('PASS')).slice(5).trim()}}`,
   'net-scan': ({ packets }) => {
     const open = packets('ip.src == 10.0.3.15 && tcp.flags.syn == 1 && tcp.flags.ack == 1 && ip.dst == 10.0.5.87').map((p) => p.sport);
-    return `HW{${[...new Set(open)].sort((a, b) => a - b).join('_')}}`;
+    return `SOC{${[...new Set(open)].sort((a, b) => a - b).join('_')}}`;
   },
   'net-download': ({ packets }) => {
     const streams = packets('http');
     const bad = streams.findIndex((p) => /\r\n\r\nMZ/.test(p.payload ?? ''));
     const request = streams.slice(0, bad).reverse().find((p) => p.http?.uri);
-    return `HW{${request.http.uri}}`;
+    return `SOC{${request.http.uri}}`;
   },
   'net-dns-tunnel': ({ packets }) => {
     const names = packets('dns.qry.name contains cdn-telemetry && dns.flags.response == 0').map((p) => p.dns.qname.split('.'));
     const hex = names.sort((a, b) => Number(a[0]) - Number(b[0])).map((labels) => labels[1]).join('');
-    return /HW\{[^}]+\}/.exec(Buffer.from(hex, 'hex').toString())[0];
+    return /SOC\{[^}]+\}/.exec(Buffer.from(hex, 'hex').toString())[0];
   },
   'net-smtp': ({ packets }) => {
     const rcpt = packets('smtp').map((p) => p.payload);
     const i = rcpt.findIndex((s) => s.includes('customers'));
-    return `HW{${/RCPT TO:<([^>]+)>/.exec(rcpt.slice(0, i).reverse().find((s) => s.startsWith('RCPT')))[1]}}`;
+    return `SOC{${/RCPT TO:<([^>]+)>/.exec(rcpt.slice(0, i).reverse().find((s) => s.startsWith('RCPT')))[1]}}`;
   },
   'net-beacon': ({ packets }) => {
     const starts = packets('ip.dst == 198.51.100.66 && tcp.flags.syn == 1 && tcp.flags.ack == 0').map((p) => p.t);
     const gaps = starts.slice(1).map((t, i) => t - starts[i]);
-    return `HW{198.51.100.66_${Math.round(gaps.reduce((a, b) => a + b, 0) / gaps.length)}}`;
+    return `SOC{198.51.100.66_${Math.round(gaps.reduce((a, b) => a + b, 0) / gaps.length)}}`;
   },
   'net-exfil': ({ packets }) => {
     const out = new Map();
@@ -175,36 +175,36 @@ export const solutions = {
       const key = `${p.src}_${p.dport}`;
       out.set(key, (out.get(key) ?? 0) + p.len);
     }
-    return `HW{${[...out.entries()].sort((a, b) => b[1] - a[1])[0][0]}}`;
+    return `SOC{${[...out.entries()].sort((a, b) => b[1] - a[1])[0][0]}}`;
   },
 
   // Secure code review
-  'code-sql-sink': ({ sh }) => `HW{${enclosingFunction(sh, sh('grep -rn "+ value +" .').trim())}}`,
+  'code-sql-sink': ({ sh }) => `SOC{${enclosingFunction(sh, sh('grep -rn "+ value +" .').trim())}}`,
   'code-secret': ({ sh }) => {
     const hit = sh('grep -rn "LKIA" .').split('\n').find((line) => line && !line.includes('EXAMPLE'));
     const [path, line] = hit.replace(/^\.\//, '').split(':');
-    return `HW{${path}:${line}}`;
+    return `SOC{${path}:${line}}`;
   },
   'code-idor': ({ sh }) => {
     const handlers = sh('cat *.py').split(/\n(?=@bp\.)/).filter((block) => /def \w+\(\w+_id\)/.test(block));
     const open = handlers.find((block) => !/owns\(|_for\(/.test(block));
-    return `HW{${/def (\w+)/.exec(open)[1]}}`;
+    return `SOC{${/def (\w+)/.exec(open)[1]}}`;
   },
-  'code-command': ({ sh }) => `HW{${enclosingFunction(sh, sh('grep -rn "shell=True" .').trim())}}`,
-  'code-path': ({ sh }) => `HW{${enclosingFunction(sh, sh('grep -rn \'replace("../"\' .').trim())}}`,
+  'code-command': ({ sh }) => `SOC{${enclosingFunction(sh, sh('grep -rn "shell=True" .').trim())}}`,
+  'code-path': ({ sh }) => `SOC{${enclosingFunction(sh, sh('grep -rn \'replace("../"\' .').trim())}}`,
   'code-fix': ({ sh }) => {
     const names = sh('ls patches').trim().split(/\s+/);
     const good = names.filter((name) => {
       const patch = sh(`cat patches/${name}`);
       return patch.includes('SORTS.get') && /^\+.*user_id = \?/m.test(patch);
     });
-    return `HW{${good[0]}}`;
+    return `SOC{${good[0]}}`;
   },
 
   // CVE case studies
   'cve-kev-exposed': ({ sh }) => {
     const line = sh('cut -d, -f1 kev.csv | tail -n +2 > ids.txt; grep -f ids.txt scan.csv | grep ",yes,"').trim().split('\n')[0];
-    return `HW{${line.split(',')[0]}}`;
+    return `SOC{${line.split(',')[0]}}`;
   },
   'cve-top-product': ({ sh }) => {
     const kevIds = new Set(sh('cut -d, -f1 kev.csv | tail -n +2').trim().split('\n'));
@@ -214,18 +214,18 @@ export const solutions = {
       if (!kevIds.has(cve)) continue;
       counts.set(cve, (counts.get(cve) ?? new Set()).add(host));
     }
-    return `HW{${[...counts.entries()].sort((a, b) => b[1].size - a[1].size)[0][0]}}`;
+    return `SOC{${[...counts.entries()].sort((a, b) => b[1].size - a[1].size)[0][0]}}`;
   },
   'cve-callback': ({ query }) => {
     const row = query('index=firewall action=allowed NOT dest_ip=10.0.3.15 NOT dest_port=443 | stats count by src_host | sort -count | head 1')[0];
-    return `HW{${row.src_host}}`;
+    return `SOC{${row.src_host}}`;
   },
   'cve-patient-zero': ({ query }) => {
     const row = query('index=firewall dest_port=445 | stats dc(dest_host) as targets by src_host | sort -targets | head 1')[0];
-    return `HW{${row.src_host}}`;
+    return `SOC{${row.src_host}}`;
   },
-  'cve-identify': ({ sh }) => `HW{${sh('grep -i moveit kev.csv').trim().split(',')[0]}}`,
-  'cve-first-seen': ({ query }) => `HW{${hms(query('index=ids cve=CVE-2021-26855 | stats earliest(_time) as first')[0].first)}}`,
+  'cve-identify': ({ sh }) => `SOC{${sh('grep -i moveit kev.csv').trim().split(',')[0]}}`,
+  'cve-first-seen': ({ query }) => `SOC{${hms(query('index=ids cve=CVE-2021-26855 | stats earliest(_time) as first')[0].first)}}`,
   'cve-double-exposed': ({ tab }) => {
     // Scan tab: internet facing hosts whose CVE is on KEV.
     const kevIds = tab(0).sh('cut -d, -f1 kev.csv | tail -n +2').trim().split('\n');
@@ -237,23 +237,23 @@ export const solutions = {
     const attacked = tab(1).query('index=ids action=detected | stats values(cve) as cves by dest_host');
     for (const row of attacked) {
       const cves = [].concat(row.cves);
-      if (exposed.has(row.dest_host) && cves.includes(exposed.get(row.dest_host))) return `HW{${row.dest_host}}`;
+      if (exposed.has(row.dest_host) && cves.includes(exposed.get(row.dest_host))) return `SOC{${row.dest_host}}`;
     }
-    return 'HW{unknown}';
+    return 'SOC{unknown}';
   },
 
   // Incident response capstone
   'capstone-phish': ({ mail }) => {
     const host = hrefs(mail()[0].html).map((u) => new URL(u).hostname).find((h) => !h.endsWith('larkfield.example'));
-    return `HW{${registered(host)}}`;
+    return `SOC{${registered(host)}}`;
   },
-  'capstone-access': ({ query }) => `HW{${query('index=windows EventCode=4624 user=m.garcia NOT src_ip=10.*')[0].src_ip}}`,
+  'capstone-access': ({ query }) => `SOC{${query('index=windows EventCode=4624 user=m.garcia NOT src_ip=10.*')[0].src_ip}}`,
   'capstone-beacon': ({ packets }) => {
     const starts = packets('ip.addr == 198.51.100.202 && tcp.flags.syn == 1 && tcp.flags.ack == 0').map((p) => p.t);
     const gaps = starts.slice(1).map((t, i) => t - starts[i]);
-    return `HW{198.51.100.202_${Math.round(gaps.reduce((a, b) => a + b, 0) / gaps.length)}}`;
+    return `SOC{198.51.100.202_${Math.round(gaps.reduce((a, b) => a + b, 0) / gaps.length)}}`;
   },
-  'capstone-stage': ({ sh }) => `HW{${sh('find /share -type f -newermt "2026-03-13 10:00"').trim().split('\n')[0]}}`,
+  'capstone-stage': ({ sh }) => `SOC{${sh('find /share -type f -newermt "2026-03-13 10:00"').trim().split('\n')[0]}}`,
   'capstone-exfil': ({ packets }) => {
     const out = new Map();
     for (const p of packets('frame.len > 1000 && ip.src == 10.0.0.0/8')) {
@@ -261,13 +261,13 @@ export const solutions = {
       const key = `${p.dst}_${p.dport}`;
       out.set(key, (out.get(key) ?? 0) + p.len);
     }
-    return `HW{${[...out.entries()].sort((a, b) => b[1] - a[1])[0][0]}}`;
+    return `SOC{${[...out.entries()].sort((a, b) => b[1] - a[1])[0][0]}}`;
   },
   'capstone-timeline': ({ tab }) => {
     const account = /@/.test(tab(0).mail()[0].to) ? tab(0).mail()[0].to.split('@')[0] : tab(0).mail()[0].to;
     const host = tab(1).query('index=windows EventCode=4688 user=m.garcia')[0].host;
     const c2 = tab(2).packets('').filter((p) => !p.dst.startsWith('10.') && !p.dst.startsWith('192.0.2'))[0].dst;
-    return `HW{${account}_${host}_${c2}}`;
+    return `SOC{${account}_${host}_${c2}}`;
   }
 };
 

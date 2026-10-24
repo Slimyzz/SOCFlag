@@ -1145,7 +1145,7 @@ export function createCommands() {
   });
   c.groups = wrap((ctx) => ctx.stdout.write(ctx.fs.user(ctx.args[0] ?? ctx.user).groups.join(' ') + '\n'));
   c.hostname = wrap((ctx) => ctx.stdout.write(ctx.shell.hostname + '\n'));
-  c.uname = wrap((ctx) => ctx.stdout.write(ctx.args.includes('-a') ? `Linux ${ctx.shell.hostname} 6.6.0-hiddenwell #1 SMP x86_64 GNU/Linux\n` : 'Linux\n'));
+  c.uname = wrap((ctx) => ctx.stdout.write(ctx.args.includes('-a') ? `Linux ${ctx.shell.hostname} 6.6.0-socflag #1 SMP x86_64 GNU/Linux\n` : 'Linux\n'));
   c.date = wrap((ctx) => ctx.stdout.write(new Date(ctx.fs.now).toUTCString().replace('GMT', 'UTC') + '\n'));
   c.uptime = wrap((ctx) => ctx.stdout.write(' 10:00:00 up 3 days,  2:14,  1 user,  load average: 0.08, 0.03, 0.01\n'));
 

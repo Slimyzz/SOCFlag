@@ -16,7 +16,7 @@ export function createMachine(config = {}, onEvent) {
     user: config.user ?? 'learner',
     cwd: config.cwd,
     env: config.env,
-    hostname: config.hostname ?? 'hiddenwell',
+    hostname: config.hostname ?? 'socflag',
     sudoRules: config.sudo ?? [],
     onEvent
   });

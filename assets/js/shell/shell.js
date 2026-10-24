@@ -51,7 +51,7 @@ function escapeRe(ch) {
 }
 
 export class Shell {
-  constructor({ fs, commands, user = 'learner', cwd, env = {}, hostname = 'hiddenwell', sudoRules = [], onEvent = () => {} }) {
+  constructor({ fs, commands, user = 'learner', cwd, env = {}, hostname = 'socflag', sudoRules = [], onEvent = () => {} }) {
     this.fs = fs;
     this.commands = commands;
     this.user = user;

@@ -336,8 +336,8 @@ export default {
       skills: ['ftp', 'follow stream', 'cleartext'],
       prepare: ['net-cleartext'],
       brief: 'Larkfield still runs an old FTP server for its backup jobs. The infrastructure team says it is fine because "the password is strong". You have been asked to show what an attacker on the network would see during one backup run.',
-      goal: 'Find the password the backup job sends to the FTP server and submit it as `HW{password}`.',
-      flag: 'tESwiJMkV7v69oEkj5mM0GP06ZIfEtM=',
+      goal: 'Find the password the backup job sends to the FTP server and submit it as `SOC{password}`.',
+      flag: 'kOZN3fGtffXkdSasU/Ltr/7yhzmlDyRT',
       workspace: () => {
         const c = new Capture(21);
         let t = 0.1;
@@ -373,8 +373,8 @@ export default {
       skills: ['tcp flags', 'SYN scan', 'display filters'],
       prepare: ['net-tcp'],
       brief: 'The network team captured traffic after an alert about a workstation probing the server range. The scan covered many ports on the database server, `10.0.3.15`. Before the server is checked, you need to know which ports the scanner found open.',
-      goal: 'Find every port on 10.0.3.15 that answered the scan as open. Submit them in ascending order joined by underscores, as `HW{port_port_port}`.',
-      flag: '9hDCSZ1jdP1Ftc10D2lpBUouKKLx',
+      goal: 'Find every port on 10.0.3.15 that answered the scan as open. Submit them in ascending order joined by underscores, as `SOC{port_port_port}`.',
+      flag: 'VDlBDt9+mHcm4zUCn7JBsjvV9YbHKA==',
       workspace: () => {
         const c = new Capture(1433);
         const open = [22, 1433, 5985, 8443];
@@ -414,8 +414,8 @@ export default {
       skills: ['http', 'follow stream', 'content types', 'file signatures'],
       prepare: ['net-cleartext', 'forensics-signatures'],
       brief: 'Endpoint protection on WS-022 quarantined a new program minutes after the user opened an email. Proxy logs show only image downloads from that machine at the time, all over plain HTTP. One of those "images" was not an image.',
-      goal: 'Find the HTTP download whose content is really a Windows program and submit the full request path (the URI) as `HW{path}`.',
-      flag: '+pe91J0EYOXAGElxIxAZBRnp2ZmdwTTQUFc2',
+      goal: 'Find the HTTP download whose content is really a Windows program and submit the full request path (the URI) as `SOC{path}`.',
+      flag: 'ox4FOx7qR0BT6JHJWFwbS6Xo1hXsM+o3tedgmg==',
       workspace: () => {
         const c = new Capture(2222);
         const ws = '10.0.5.22';
@@ -453,7 +453,7 @@ export default {
       prepare: ['net-dns'],
       brief: 'The firewall blocks all outbound traffic from the finance network except DNS to the internal resolver. Someone still managed to get data out. The DNS resolver logs show one workstation making a lot of unusual lookups this morning.',
       goal: 'Find the domain used for tunnelling, put the smuggled data back together in order, decode it, and submit the flag.',
-      flag: 'fyfcS2fK8yY2zTjYx5wSyTkxDODPFDlpaNp8QS2eWw9pttZ9',
+      flag: 'WWnRpgXTfH/TMVi4AKa4a494siki5AXyBI2K7T4i0cWfEmHEag==',
       workspace: (flag) => {
         const c = new Capture(53);
         const resolver = '10.0.0.53';
@@ -488,8 +488,8 @@ export default {
       skills: ['smtp', 'follow stream', 'cleartext'],
       prepare: ['net-cleartext'],
       brief: 'A data loss alert says a large attachment left through Larkfield\'s old internal mail relay, which still accepts plain SMTP on port 25. Three messages went out through it in the capture window. HR needs to know where the customer list was sent.',
-      goal: 'Find the message carrying the customer list and submit the recipient\'s email address as `HW{address}`.',
-      flag: 'V4iB/SW4E31/gzT+iAMjHvZBpPI+qoT6jdIcFM62YHw=',
+      goal: 'Find the message carrying the customer list and submit the recipient\'s email address as `SOC{address}`.',
+      flag: 'vMS1i4spV+2jI+bwaSw7krsc1MLDMaiPrIM4FBYpPhQF',
       workspace: () => {
         const c = new Capture(25);
         const relay = '10.0.1.25';
@@ -529,8 +529,8 @@ export default {
       skills: ['conversations', 'timing analysis', 'beaconing'],
       prepare: ['net-patterns', 'net-tls'],
       brief: 'This is fifteen minutes of traffic from the server VLAN. The servers here should only talk to each other, to the update server and to a monitoring service. One of them has been talking to somewhere else, quietly and on a schedule.',
-      goal: 'Find the external address the beaconing server talks to and how often, in whole seconds. Submit `HW{address_seconds}`.',
-      flag: 'dvumdgU0C6Kq3v96WClGfd0u5kQ=',
+      goal: 'Find the external address the beaconing server talks to and how often, in whole seconds. Submit `SOC{address_seconds}`.',
+      flag: 'XqUXrBqKj/I2v5ihvIKloWpArSD2',
       workspace: () => {
         const c = new Capture(60);
         const servers = ['10.0.3.11', '10.0.3.12', '10.0.3.15', '10.0.3.20', '10.0.3.21'];
@@ -562,8 +562,8 @@ export default {
       skills: ['conversations', 'frame.len', 'unusual ports', 'exfiltration'],
       prepare: ['net-patterns'],
       brief: 'Overnight, the internet link from the office was unusually busy for about a minute. Backups go to a cloud provider at night, so busy is not automatically bad. Something else also sent a lot of data out, to a destination nothing at Larkfield should talk to.',
-      goal: 'Find the internal host that uploaded data to an unexpected destination, and the destination port it used. Submit `HW{host_port}`.',
-      flag: 'DVk5USMauqW3Sfk7vUE0laz6',
+      goal: 'Find the internal host that uploaded data to an unexpected destination, and the destination port it used. Submit `SOC{host_port}`.',
+      flag: 'XpnW/O9hKgz3Xe02usWi/WrjAQ==',
       workspace: () => {
         const c = new Capture(4444);
         // The nightly backup: big, expected, to the backup provider on 443.

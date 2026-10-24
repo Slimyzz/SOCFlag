@@ -94,8 +94,8 @@ export default {
       skills: ['phishing', 'URL anatomy', 'registered domains'],
       prepare: ['capstone-brief', 'email-links'],
       brief: 'Maria Garcia reported the invoice email. The security team needs the domain behind its link, so they can block it and search the proxy logs for anyone who visited it. The link text looks like Larkfield, as these always do.',
-      goal: 'Find where the email\'s link really goes and submit its registered domain as `HW{domain}`.',
-      flag: 'gQXvgVkajqBAex86eyD7BoROWg==',
+      goal: 'Find where the email\'s link really goes and submit its registered domain as `SOC{domain}`.',
+      flag: 'VdOKccssaoNwVJ3H9VZdTkL3kUc=',
       workspace: () => ({ type: 'mail', messages: [phishEmail, ...inboxExtras], open: 0 }),
       hints: ['The link text and the real target are different. The mailbox shows the real target in brackets.', 'Take the host name of the real link and read it from the right.', 'The host is `finance.larkfield.example.pay-review.test`. The registered domain is the last two labels.'],
       writeup: {
@@ -112,8 +112,8 @@ export default {
       skills: ['Windows logons', 'logon types', 'pivoting'],
       prepare: ['logs-windows'],
       brief: 'Proxy logs confirm Maria visited the phishing site and submitted a form. Her account may now be in someone else\'s hands. Larkfield staff reach internal systems through a remote access gateway, and almost everyone connects from inside the office network. Somewhere in today\'s logons, Maria\'s account was used from somewhere it should not have been.',
-      goal: 'Find the external address that logged in as m.garcia and submit it as `HW{address}`.',
-      flag: 'LPHMwacP9hQjb4uukNC4hQ==',
+      goal: 'Find the external address that logged in as m.garcia and submit it as `SOC{address}`.',
+      flag: 'SqEyEah05R2u3tqJ3JZ9Hm4=',
       workspace: () => {
         const r = random(614);
         const events = [];
@@ -146,8 +146,8 @@ export default {
       skills: ['packets', 'beaconing', 'timing'],
       prepare: ['net-patterns'],
       brief: 'From the gateway, the attacker reached Maria\'s workstation, WS-022 (10.0.5.22), and ran tooling on it. This is twenty minutes of traffic captured from that workstation. If something is running on it for the attacker, it will be calling home on a schedule.',
-      goal: 'Find the external address WS-022 is beaconing to and how often, in whole seconds. Submit `HW{address_seconds}`.',
-      flag: 'gAzlz+pI4QmfyWBHMvVkBG9z3Kau',
+      goal: 'Find the external address WS-022 is beaconing to and how often, in whole seconds. Submit `SOC{address_seconds}`.',
+      flag: 'uzuwLs0+qLNDzNKZFz+nzotqjKkblg==',
       workspace: () => {
         const c = new Capture(202);
         const ws = '10.0.5.22';
@@ -177,8 +177,8 @@ export default {
       skills: ['forensics', 'file timelines', 'find'],
       prepare: ['forensics-timeline'],
       brief: 'Using Maria\'s access, the attacker reached the file server SRV-FILE01 and, the logs suggest, collected data into one place before taking it. You have a copy of a working folder from that server with its original timestamps. The attacker was active from about 10:00 UTC on 13 March. Anything created in that window, in a place it should not be, is what they staged.',
-      goal: 'Find the archive the attacker created to stage the stolen data and submit its full path as `HW{path}`.',
-      flag: 'CGn2tIB55nEADOlTKVl9TpjKGnon0xsH1DUZ0zsRGhoOgZVfDuCRhFFVxKg=',
+      goal: 'Find the archive the attacker created to stage the stolen data and submit its full path as `SOC{path}`.',
+      flag: 'qOsZPO6IZ8aeUd4Ah8eaUEdLyjYDyc9LZzRicCszQ0ePMTp165IXPtwiOGvd',
       workspace: () => {
         const r = random(1322);
         const files = {};
@@ -210,8 +210,8 @@ export default {
       skills: ['packets', 'conversations', 'exfiltration'],
       prepare: ['net-patterns'],
       brief: 'The staged archive left the network shortly after it was created. This is traffic captured from SRV-FILE01 around that time. The nightly backup also ships data out, so volume alone is not the answer. Find where the attacker sent the data, which will be somewhere the server has no reason to talk to.',
-      goal: 'Find the external host the archive was uploaded to and the port used, and submit `HW{address_port}`.',
-      flag: 'DQHJm9SU8maYasH8g8to1tcOrK9EQ7U=',
+      goal: 'Find the external host the archive was uploaded to and the port used, and submit `SOC{address_port}`.',
+      flag: 'hF65gvbYELs2CxQy6oKQuSqnlNzilfh8',
       workspace: () => {
         const c = new Capture(541);
         const srv = '10.0.3.8';
@@ -239,8 +239,8 @@ export default {
       skills: ['correlation', 'multiple sources', 'reporting'],
       prepare: ['logs-timeline'],
       brief: 'The write-up needs the incident in one line: who was phished, which host the attacker controlled, and where it called home. Those three facts live in three different places, open together here: the reported mailbox, the SIEM, and the packet capture from the compromised workstation. Pull one fact from each.',
-      goal: 'Submit `HW{account_host_c2address}`: the phished account (its user name before the @), the host the attacker ran code on, and the command and control address it beaconed to. For example `HW{j.smith_WS-101_203.0.113.9}`.',
-      flag: '2iXYUnZaTnITDNGxzrQG/0dZdTB3QRPd3UFXC6ZxWv7Iug==',
+      goal: 'Submit `SOC{account_host_c2address}`: the phished account (its user name before the @), the host the attacker ran code on, and the command and control address it beaconed to. For example `SOC{j.smith_WS-101_203.0.113.9}`.',
+      flag: 'GhGP3wmi1YwzkYNrYN112FRPIkFYbxKad32xpCMdb7PhOxY=',
       workspace: () => {
         // The SIEM tab: process creation showing the attacker's tooling on WS-022,
         // plus ordinary activity, so the host is found, not guessed.

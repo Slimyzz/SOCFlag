@@ -298,8 +298,8 @@ export default {
       skills: ['grep -rn', 'SQL injection', 'reviewing'],
       prepare: ['code-mindset', 'code-injection'],
       brief: 'The inventory service has about thirty database queries across its modules. A penetration test report says one search feature is injectable but does not say which. The developers would like the function name before they start.',
-      goal: 'Find the function that builds an SQL query from request input without parameters and submit its name as `HW{function}`.',
-      flag: '0fsMyQCOWk5F78Lkx/EA9Hr1HBZ0ZNNRtfM=',
+      goal: 'Find the function that builds an SQL query from request input without parameters and submit its name as `SOC{function}`.',
+      flag: 'dNrhiLTIVgPoAvmz0gxrR3/imDvX20u8XwMc',
       workspace: () => {
         const r = random(31);
         const tables = ['items', 'suppliers', 'locations', 'stock', 'transfers', 'audits'];
@@ -340,8 +340,8 @@ export default {
       skills: ['grep -rn', 'secrets', 'hidden files'],
       prepare: ['code-secrets'],
       brief: 'A cloud provider emailed Larkfield: one of its access keys was used from an unknown network last night. The key starts with `LKIA`. The platform team says keys are never stored in code. You have a copy of the deployment repository, including the parts most people never look at.',
-      goal: 'Find where the key starting with `LKIA` is stored in the repository and submit its location as `HW{path:line}`, using the path relative to the repository root, for example `HW{src/app.py:12}`.',
-      flag: 'C4/IGMM3Vy3q+zK8RCCrFGD+Tb/W95rF9tHE4CG6',
+      goal: 'Find where the key starting with `LKIA` is stored in the repository and submit its location as `SOC{path:line}`, using the path relative to the repository root, for example `SOC{src/app.py:12}`.',
+      flag: 'YZmMN9TUfTACIKNME4SnEpzGn5ritlOy3ihTPnGJpQ==',
       workspace: () => {
         const r = random(77);
         const files = {};
@@ -370,8 +370,8 @@ export default {
       skills: ['access control', 'IDOR', 'code reading'],
       prepare: ['code-access'],
       brief: 'The customer portal lets people view and download their invoices. A customer reported that changing a number in the address bar showed them someone else\'s invoice. The portal has six routes that take an ID, and the developers believe they all check ownership.',
-      goal: 'Find the route handler that returns data for an ID without checking it belongs to the current customer, and submit its function name as `HW{function}`.',
-      flag: 'a4iwgO7zZQyAxNMFgvRgscLPfPagpiNz',
+      goal: 'Find the route handler that returns data for an ID without checking it belongs to the current customer, and submit its function name as `SOC{function}`.',
+      flag: 'KZ9w3Fv+aD+eV/69dLnQwALSS7B4EpauTA==',
       workspace: () => ({
         type: 'shell',
         cwd: '/home/learner/portal',
@@ -481,8 +481,8 @@ def view_address(address_id):
       skills: ['command injection', 'subprocess', 'validation'],
       prepare: ['code-injection'],
       brief: 'The network team\'s internal tools app runs diagnostics: ping, traceroute, DNS lookups and a certificate check. Each feature takes a host name from a web form. Some of them were written carefully. The security team wants to know which one can be made to run extra commands.',
-      goal: 'Find the function where form input reaches a shell, and submit its name as `HW{function}`.',
-      flag: '03fUwvSeCa4cov8TTlDvH/yU',
+      goal: 'Find the function where form input reaches a shell, and submit its name as `SOC{function}`.',
+      flag: 'LyNOOi6Ksjuv4jtCGGL8DE+xfg==',
       workspace: () => ({
         type: 'shell',
         cwd: '/home/learner/netools',
@@ -548,8 +548,8 @@ def run_whois():
       skills: ['path traversal', 'canonical paths', 'code reading'],
       prepare: ['code-files'],
       brief: 'A document service lets staff download templates, policies, their own reports and shared exports. A web application firewall alert showed requests containing `..%2f` to the service. Four handlers read files based on request input. Find the one that would actually let those requests out of its folder.',
-      goal: 'Find the handler that can read files outside its intended folder and submit its function name as `HW{function}`.',
-      flag: 'l9zhV7/LgdvOnFaRuC0=',
+      goal: 'Find the handler that can read files outside its intended folder and submit its function name as `SOC{function}`.',
+      flag: '/gxZiGLR3RRi2UnltceV',
       workspace: () => ({
         type: 'shell',
         cwd: '/home/learner/docservice',
@@ -602,8 +602,8 @@ def get_export():
       skills: ['patch review', 'SQL injection', 'allow lists'],
       prepare: ['code-injection'],
       brief: 'The order history endpoint was reported as injectable through both its search box and its sort option. Six developers each sent a patch. Some fix one problem and not the other, some introduce new problems, and one is right.\n\nThe original code is in `history.py` and the patches are in `patches/`.',
-      goal: 'Review the patches and submit the file name of the one that fixes both problems correctly, including `.diff`, as `HW{name}`.',
-      flag: 'Qy54Ksdr9sqSNbCHvSZpj7zbjBTVhK3L+uJRcrWftRdiDzB6fQg=',
+      goal: 'Review the patches and submit the file name of the one that fixes both problems correctly, including `.diff`, as `SOC{name}`.',
+      flag: 'xC1JfWu1RmLJbp8KfiBs8pNTMDlGACHRr7SqRXnoVLoJWFhy+URw',
       workspace: () => {
         const original = `def order_history():
     term = request.args.get("q", "")

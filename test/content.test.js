@@ -85,12 +85,12 @@ test('every challenge is well formed', () => {
   }
 });
 
-test('every flag is sealed and unseals to an HW{...} value', () => {
+test('every flag is sealed and unseals to an SOC{...} value', () => {
   for (const c of challenges) {
     assert.notEqual(c.flag, 'COMPUTE', `${c.id} still has an unsealed COMPUTE flag`);
     assert.notEqual(c.flag, 'PENDING', `${c.id} still has an unsealed PENDING flag`);
     const flag = unseal(c.id, c.flag);
-    assert.match(flag, /^HW\{.+\}$/, `${c.id} does not unseal to a valid flag (got ${flag})`);
+    assert.match(flag, /^SOC\{.+\}$/, `${c.id} does not unseal to a valid flag (got ${flag})`);
   }
 });
 
@@ -116,12 +116,12 @@ test('no plaintext flag appears anywhere in the shipped source', () => {
   }
 });
 
-test('the content files themselves contain no HW{...} literal that is a real flag', () => {
-  // Placeholders like HW{host} are fine; a real flag would be one that unseals.
+test('the content files themselves contain no SOC{...} literal that is a real flag', () => {
+  // Placeholders like SOC{host} are fine; a real flag would be one that unseals.
   const realFlags = new Set(challenges.map((c) => unseal(c.id, c.flag)));
   for (const file of readdirSync(join(ROOT, 'content')).filter((f) => f.endsWith('.js'))) {
     const body = readFileSync(join(ROOT, 'content', file), 'utf8');
-    for (const match of body.matchAll(/HW\{[^}]*\}/g)) {
+    for (const match of body.matchAll(/SOC\{[^}]*\}/g)) {
       assert.ok(!realFlags.has(match[0]), `real flag ${match[0]} written in cleartext in content/${file}`);
     }
   }

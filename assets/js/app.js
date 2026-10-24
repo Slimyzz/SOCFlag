@@ -54,7 +54,7 @@ function nextStep() {
 }
 
 function setTitle(title) {
-  document.title = title ? `${title} | HiddenWell` : 'HiddenWell: learn cybersecurity by doing it';
+  document.title = title ? `${title} | SOCFlag` : 'SOCFlag: blue-team security, learned by investigating';
 }
 
 // ---------------------------------------------------------------- Home
@@ -300,7 +300,7 @@ function viewChallenges() {
   const view = [
     h('header', { class: 'page-head' },
       h('h1', {}, 'Challenges'),
-      h('p', { class: 'lede' }, `${allChallenges.length} capture-the-flag challenges across every topic. Each one hides a flag that looks like HW{...}. Find it and submit it.`),
+      h('p', { class: 'lede' }, `${allChallenges.length} capture-the-flag challenges across every topic. Each one hides a flag that looks like SOC{...}. Find it and submit it.`),
       h('div', { class: 'facts' }, h('span', {}, h('strong', {}, `${solvedCount}/${allChallenges.length}`), ' solved'), h('span', {}, h('strong', {}, `${earnedPoints()}/${totalPoints}`), ' points'))),
     h('div', { class: 'filters' },
       h('label', { class: 'grow' }, h('span', {}, 'Search'), h('input', { class: 'field', type: 'search', value: filters.q, placeholder: 'Name or skill, like grep or SQL', oninput: (e) => { filters.q = e.target.value; render(); } })),
@@ -326,7 +326,7 @@ async function viewChallenge(id) {
   const sideHost = h('div', { class: 'activity-side' });
   const hintsBox = h('section', { class: 'hints', 'aria-labelledby': 'hints-title' });
   const resultBox = h('div', { 'aria-live': 'polite' });
-  const input = h('input', { class: 'field', type: 'text', placeholder: 'HW{...}', autocomplete: 'off', spellcheck: 'false', 'aria-label': 'Flag' });
+  const input = h('input', { class: 'field', type: 'text', placeholder: 'SOC{...}', autocomplete: 'off', spellcheck: 'false', 'aria-label': 'Flag' });
   const feedback = h('div', { class: 'feedback', 'aria-live': 'polite' });
   const form = h('form', { class: 'flag-form' }, h('label', { for: 'flag-input' }, 'Submit the flag'), h('div', { class: 'row', style: 'margin-top:.4rem' }, input, h('button', { class: 'btn primary', type: 'submit' }, 'Submit')), feedback);
   input.id = 'flag-input';
@@ -369,9 +369,9 @@ async function viewChallenge(id) {
     event.preventDefault();
     const value = input.value.trim();
     if (!value) return;
-    if (!/^hw\{.+\}$/i.test(value)) {
+    if (!/^soc\{.+\}$/i.test(value)) {
       feedback.className = 'feedback no';
-      feedback.textContent = 'Flags look like HW{...}, including the braces.';
+      feedback.textContent = 'Flags look like SOC{...}, including the braces.';
       return;
     }
     if (normaliseFlag(value) === normaliseFlag(flag)) {
@@ -515,7 +515,7 @@ function viewResources() {
   return [
     h('header', { class: 'page-head' },
       h('h1', {}, 'Where to go next'),
-      h('p', { class: 'lede' }, 'HiddenWell teaches the foundations. When you are ready for more, these are established, legal places to keep learning and practising. Everything here is reputable and most of it is free. Only ever practise on systems these platforms give you, or ones you own.')),
+      h('p', { class: 'lede' }, 'SOCFlag teaches the foundations. When you are ready for more, these are established, legal places to keep learning and practising. Everything here is reputable and most of it is free. Only ever practise on systems these platforms give you, or ones you own.')),
     ...RESOURCES.map((section) => h('section', { style: 'margin-top:2rem' },
       h('h2', { class: 'subhead', style: 'margin-top:0' }, section.group),
       h('ul', { class: 'resource-list' }, section.items.map(([name, url, text]) => h('li', {},
@@ -548,7 +548,7 @@ function viewProgress() {
   });
   const download = () => {
     const blob = new Blob([store.export()], { type: 'application/json' });
-    const link = h('a', { href: URL.createObjectURL(blob), download: `hiddenwell-progress-${new Date().toISOString().slice(0, 10)}.json` });
+    const link = h('a', { href: URL.createObjectURL(blob), download: `socflag-progress-${new Date().toISOString().slice(0, 10)}.json` });
     document.body.append(link);
     link.click();
     link.remove();
@@ -568,7 +568,7 @@ function viewProgress() {
         h('div', { class: 'row' }, h('button', { class: 'btn', type: 'button', onclick: download }, 'Export progress'), h('button', { class: 'btn', type: 'button', onclick: () => fileInput.click() }, 'Import progress'), fileInput), message),
       h('section', {}, h('h2', {}, 'Start over'), h('p', { class: 'muted' }, 'Clears lessons, solved challenges, hints and review cards from this browser. This cannot be undone.'),
         h('button', { class: 'btn', type: 'button', onclick: () => {
-          if (confirm('Clear all HiddenWell progress in this browser?')) {
+          if (confirm('Clear all SOCFlag progress in this browser?')) {
             store.reset();
             updateScore();
             route();
@@ -582,9 +582,9 @@ function viewProgress() {
 function viewAbout() {
   setTitle('How it works');
   return [
-    h('header', { class: 'page-head' }, h('h1', {}, 'How HiddenWell works')),
+    h('header', { class: 'page-head' }, h('h1', {}, 'How SOCFlag works')),
     mdNode(`
-HiddenWell is a free place to learn the basics of defensive cybersecurity by practising them. Each topic is a short run of lessons followed by capture-the-flag challenges, where the goal is to investigate some evidence and find a hidden string that looks like \`HW{...}\`. The focus is blue-team work: analysing logs, email, files and network traffic to work out what happened, rather than attacking systems.
+SOCFlag is a free place to learn the basics of defensive cybersecurity by practising them. Each topic is a short run of lessons followed by capture-the-flag challenges, where the goal is to investigate some evidence and find a hidden string that looks like \`SOC{...}\`. The focus is blue-team work: analysing logs, email, files and network traffic to work out what happened, rather than attacking systems.
 
 **Everything runs in your browser.** The terminal is a Linux-style shell written in JavaScript, with its own pretend filesystem. The SIEM, the mailbox, the packet viewer and the analyst tools are all small programs on this page, working on evidence that is generated here too. None of it can reach the internet or your real files, so there is nothing you can break by experimenting.
 
@@ -594,7 +594,7 @@ HiddenWell is a free place to learn the basics of defensive cybersecurity by pra
 
 **Only practise on systems you own or have permission to test.** The skills here are real and defensive, but the line matters everywhere. Using security techniques against other people's systems without permission is illegal in most countries and causes real harm. The [Resources](#/resources) page lists established, legal places to keep learning and practising.
 
-**Open source.** HiddenWell is MIT licensed. Fonts are Atkinson Hyperlegible by the Braille Institute and JetBrains Mono, both under the SIL Open Font License.
+**Open source.** SOCFlag is MIT licensed. Fonts are Atkinson Hyperlegible by the Braille Institute and JetBrains Mono, both under the SIL Open Font License.
 `, 'div', 'prose')
   ];
 }

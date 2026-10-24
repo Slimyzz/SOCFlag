@@ -2,7 +2,7 @@
 // and write is guarded because storage can be blocked (private windows,
 // strict settings); the site still works, it just forgets on reload.
 
-const KEY = 'hiddenwell:progress:v1';
+const KEY = 'socflag:progress:v1';
 const EMPTY = () => ({ lessons: {}, answers: {}, solved: {}, hints: {}, cards: {}, opened: {}, last: null });
 
 let state = load();
@@ -81,10 +81,10 @@ export const store = {
     save();
   },
 
-  export: () => JSON.stringify({ app: 'hiddenwell', version: 1, exported: new Date().toISOString(), progress: state }, null, 2),
+  export: () => JSON.stringify({ app: 'socflag', version: 1, exported: new Date().toISOString(), progress: state }, null, 2),
   import(json) {
     const data = JSON.parse(json);
-    if (data?.app !== 'hiddenwell' || !data.progress) throw new Error('That file is not a HiddenWell progress export.');
+    if (data?.app !== 'socflag' || !data.progress) throw new Error('That file is not a SOCFlag progress export.');
     state = { ...EMPTY(), ...data.progress };
     save();
   },
@@ -96,7 +96,7 @@ export const store = {
 
 export function readPref(key, fallback) {
   try {
-    return localStorage.getItem(`hiddenwell:${key}`) ?? fallback;
+    return localStorage.getItem(`socflag:${key}`) ?? fallback;
   } catch {
     return fallback;
   }
@@ -104,6 +104,6 @@ export function readPref(key, fallback) {
 
 export function writePref(key, value) {
   try {
-    localStorage.setItem(`hiddenwell:${key}`, value);
+    localStorage.setItem(`socflag:${key}`, value);
   } catch {}
 }

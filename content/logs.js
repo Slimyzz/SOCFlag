@@ -307,8 +307,8 @@ export default {
       skills: ['stats', 'sort', 'top'],
       prepare: ['logs-searching', 'logs-auth'],
       brief: 'Several addresses spent the night trying to log in to `web02` over SSH. The on call engineer wants to block the worst offender first and check whether the account it went after most is even a real account on the server.',
-      goal: 'Find the address with the most failed logins and the user name it tried most often. Submit `HW{address_user}`, for example `HW{192.0.2.1_root}`.',
-      flag: 'R524dhTYX3SuuIRFyjXOF5MI9hJPOcqmaQ==',
+      goal: 'Find the address with the most failed logins and the user name it tried most often. Submit `SOC{address_user}`, for example `SOC{192.0.2.1_root}`.',
+      flag: 'iShncXhc3DlteVsybXKJ5yZW1l/Xg0hMNvg=',
       workspace: () => {
         const r = random(2026);
         const events = [];
@@ -348,8 +348,8 @@ export default {
       skills: ['stats', 'status codes', 'pivoting'],
       prepare: ['logs-searching'],
       brief: 'The Larkfield website was hit by an automated scanner this morning. Scanners request hundreds of well known file names hoping something sensitive was left lying around. Almost all of those requests fail with 404, which is fine. What matters is whether any of them did not.',
-      goal: 'Identify the scanner, find the one path it requested that the server actually returned with status 200, and submit it as `HW{path}`, for example `HW{/admin/login.php}`.',
-      flag: 's8BvcKVaQxBNRl0dfqDV6f6Z/+I3EuaqyaGIeiJgKcqvdEokhK8=',
+      goal: 'Identify the scanner, find the one path it requested that the server actually returned with status 200, and submit it as `SOC{path}`, for example `SOC{/admin/login.php}`.',
+      flag: 'a6b/sc+lpy1ZygHASbbwtJBKruAKsXh6tIC468fmlqYR27ne9ugI',
       workspace: () => {
         const r = random(404);
         const events = [];
@@ -389,8 +389,8 @@ export default {
       skills: ['dc()', 'EventCode 4625', 'password spraying'],
       prepare: ['logs-auth', 'logs-windows'],
       brief: 'The domain controller logged a lot of failed logons (event 4625) yesterday evening. One service account locked itself out after a script kept using an old password, which is noisy but harmless. Somewhere underneath that noise, someone is quietly trying one password against many accounts.',
-      goal: 'Find the address that is password spraying and the number of different accounts it tried. Submit `HW{address_count}`.',
-      flag: 'EpREwOECcMXq8k0+OW6CEV25rQ==',
+      goal: 'Find the address that is password spraying and the number of different accounts it tried. Submit `SOC{address_count}`.',
+      flag: '9x++XwVjEe1gDr3V0HRnYX51As4=',
       workspace: () => {
         const r = random(4625);
         const events = [];
@@ -443,8 +443,8 @@ export default {
       skills: ['action=success', 'auth_method', 'pivoting'],
       prepare: ['logs-auth', 'logs-timeline'],
       brief: 'Larkfield\'s Linux servers are hammered by password guessing every night and nobody pays much attention, because staff log in with SSH keys. This morning the overnight report looked a little different, and your lead wants a definite answer: did any of the guessing succeed?',
-      goal: 'Find the account that an outside address managed to log in to, and the exact time of that login in UTC. Submit `HW{user_HH:MM:SS}`.',
-      flag: 'EbX2E7X6GmZ7qBswgXzK7Vpx6A==',
+      goal: 'Find the account that an outside address managed to log in to, and the exact time of that login in UTC. Submit `SOC{user_HH:MM:SS}`.',
+      flag: 'u0zgi4gcDGRt4wDv/cAnr7+L8jY=',
       workspace: () => {
         const r = random(22);
         const events = [];
@@ -484,8 +484,8 @@ export default {
       skills: ['EventCode 4720', 'EventCode 4732', 'Windows accounts'],
       prepare: ['logs-windows'],
       brief: 'An attacker who gets into a machine often creates an account of their own, so they can come back even if the original way in is closed. The helpdesk created a few accounts today for new starters, which is normal. One account creation was not the helpdesk.',
-      goal: 'Find the account that was created and then added to a local Administrators group, and the account that did it. Submit `HW{new_account_creator}`.',
-      flag: 'x8N+XLm5JpinrnxksDZ2wjWwaMMTgg==',
+      goal: 'Find the account that was created and then added to a local Administrators group, and the account that did it. Submit `SOC{new_account_creator}`.',
+      flag: 'BEdFl/qmnX0bDHfVL0v157FfA4eDz0M=',
       workspace: () => {
         const r = random(4720);
         const events = [];
@@ -525,8 +525,8 @@ export default {
       skills: ['EventCode 4688', 'parent processes', 'Base64', 'UTF-16'],
       prepare: ['logs-windows'],
       brief: 'Larkfield records process creation (4688) with full command lines. PowerShell runs all day here, for legitimate admin scripts and software deployment. A detection for Office applications starting PowerShell fired once this afternoon, and the command line is encoded so nobody can read it at a glance.\n\nThe Tools page (or the Base64 decoder in any analyst tool) will help with the encoding.',
-      goal: 'Find the PowerShell process started by an Office application, decode its command, and submit the domain it tries to download from as `HW{domain}`.',
-      flag: 'SjSSG4MMt6S2tiuiL8xs9Ar4SaGSlJvtsg6Eo+vKq/A5',
+      goal: 'Find the PowerShell process started by an Office application, decode its command, and submit the domain it tries to download from as `SOC{domain}`.',
+      flag: 'HICteZHW7FAs2ICBRMHKQ9Ix20Fde/U7c7BbM017AyfkrQ==',
       workspace: () => {
         const r = random(4688);
         const events = [];
@@ -566,8 +566,8 @@ export default {
       skills: ['proxy logs', 'beaconing', 'stats range', 'baselines'],
       prepare: ['logs-detections', 'logs-timeline'],
       brief: 'Malware usually needs to contact its operator for instructions. Many families do this on a timer, sending a small request every few minutes, which security people call **beaconing**. It is easy to miss because each request is tiny and looks like ordinary web traffic.\n\nYou have one day of web proxy logs from 30 workstations. Plenty of legitimate software also checks in on a timer, so regular traffic alone is not proof.',
-      goal: 'Find the workstation that is beaconing and the domain it is contacting. Submit `HW{host_domain}`, for example `HW{WS-001_example.test}`.',
-      flag: '6Ivr2umOsy/d+WJrFoiNGiTb7VnXDlTy2FVQ1/Q5zQ==',
+      goal: 'Find the workstation that is beaconing and the domain it is contacting. Submit `SOC{host_domain}`, for example `SOC{WS-001_example.test}`.',
+      flag: 'e30I4p69//56dammNNTsi8k9oqJAu8SCGSbdwuzfX9U=',
       workspace: () => {
         const r = random(300);
         const events = [];

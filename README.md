@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="docs/logo.svg" width="88" alt="HiddenWell logo">
+  <img src="docs/logo.svg" width="88" alt="SOCFlag logo">
 </p>
 
-<h1 align="center">HiddenWell</h1>
+<h1 align="center">SOCFlag</h1>
 
 <p align="center">
   <b>A blue-team CTF that runs entirely in your browser.</b><br>
-  Investigate logs, phishing emails, files and packet captures. Find the flag.
+  Investigate logs, phishing emails, files and packet captures. Capture the <code>SOC{flag}</code>.
 </p>
 
 <p align="center">
@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/home.png" alt="HiddenWell home page" width="900">
+  <img src="docs/screenshots/home.png" alt="SOCFlag home page" width="900">
 </p>
 
 ## What it is

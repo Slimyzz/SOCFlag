@@ -91,7 +91,7 @@ export default {
       blocks: [
         { type: 'text', body: 'A **shell** is a program that waits for you to type a command, runs it, and prints the result. When people say "open a terminal" they mean open a window running a shell.\n\nThe terminal on the right is a real shell running in this page. It has its own files and nothing you do there can touch your computer, so try things freely.' },
         { type: 'example', title: 'Reading the prompt', steps: [
-          { out: 'learner@hiddenwell:~$', note: '`learner` is who you are logged in as, `hiddenwell` is the machine, `~` is your home folder, and `$` means you are a normal user. Root (the administrator) gets `#` instead.' },
+          { out: 'learner@socflag:~$', note: '`learner` is who you are logged in as, `socflag` is the machine, `~` is your home folder, and `$` means you are a normal user. Root (the administrator) gets `#` instead.' },
           { cmd: 'whoami', out: 'learner', note: 'Prints your user name. Useful when you are not sure which account a shell belongs to.' },
           { cmd: 'pwd', out: '/home/learner', note: 'Print working directory: the folder you are in right now.' },
           { cmd: 'ls', out: 'evidence  logs  notes  private.txt  projects', note: 'Lists what is in the current folder.' }
@@ -351,7 +351,7 @@ export default {
       prepare: ['linux-paths', 'linux-reading'],
       brief: 'A contractor finished a job on this server and said they left the handover details "somewhere obvious" in their project folder. You can see the folder, but it looks empty.',
       goal: 'Find the handover note and submit the flag inside it.',
-      flag: 'yyBckgScOkbSkMP7sYtYBGgSGYcf2Dg6ISPea/sKisPhfRSwAw==',
+      flag: 'kL3FNE6lyUxeRCd99ZLRsCmWBawy6kll29tAXvp5TfwFb6IOlEs=',
       workspace: (flag) => ({
         type: 'shell',
         motd: 'Server: build-02. The contractor project lives in /srv/projects/handover.\n',
@@ -378,7 +378,7 @@ export default {
       prepare: ['linux-search'],
       brief: 'A web app writes logs for six services into `/var/log/app`, and there are thousands of lines. One of the debug lines printed a flag by mistake. Reading every file by hand would take an hour.',
       goal: 'Search the logs and submit the flag that leaked into them.',
-      flag: '0oVMplrkZaSQND0epHSKKSNM0eDDvxKGL4/v',
+      flag: 'CjGmZNzoliZ4VlFrKuH5zCul/iLeRNpSqhRxIw==',
       workspace: (flag) => {
         const r = random(41);
         const services = ['auth', 'billing', 'search', 'gateway', 'mailer', 'worker'];
@@ -397,7 +397,7 @@ export default {
         });
         return { type: 'shell', motd: 'Logs are in /var/log/app, one folder per service.\n', cwd: '/var/log/app', files };
       },
-      hints: ['You do not need to read the files. Search them.', 'Every flag starts with `HW{`. grep can search a whole folder tree with one option.', 'Run `grep -r "HW{" /var/log/app`.'],
+      hints: ['You do not need to read the files. Search them.', 'Every flag starts with `SOC{`. grep can search a whole folder tree with one option.', 'Run `grep -r "SOC{" /var/log/app`.'],
       writeup: {
         how: '`grep -r` walks every file under a folder and prints matching lines with the file name in front. Searching for the flag prefix finds the one debug line in the billing log that dumped a token.',
         why: 'Secrets leaking into logs is extremely common: tokens in debug output, passwords in URLs, API keys in stack traces. Logs are usually readable by far more people and systems than the secret was meant for, and they are often shipped off to third party services.',
@@ -413,7 +413,7 @@ export default {
       prepare: ['linux-search'],
       brief: 'The backup folder has hundreds of files with meaningless names. The admin remembers only one detail about the file they need: it was exactly 1,337 bytes.',
       goal: 'Find the file that is exactly 1,337 bytes and submit the flag inside.',
-      flag: 'L9LIxi8Uq/RouM5Nf4W3xOliIX/lvg==',
+      flag: 'a+PJu6iBwzkzH1A1CEDYVHhwU55jTq0=',
       workspace: (flag) => {
         const r = random(1337);
         const files = {};
@@ -449,7 +449,7 @@ export default {
       prepare: ['linux-permissions'],
       brief: 'A cleanup script went wrong and set the permissions on everything in your vault folder to nothing at all. The files are still yours, but `cat` says "Permission denied" on all of them.',
       goal: 'Get the flag out of `~/vault/key.txt`.',
-      flag: 'Xjewm492U7zUBY/F+YNjtaYzfXmKFoueQZ0f',
+      flag: 'A9tG7oU3zn07nLUq/r7OFU98d7544u2urCVApg==',
       workspace: (flag) => ({
         type: 'shell',
         motd: 'Your vault is in ~/vault. Something is wrong with it.\n',
@@ -476,8 +476,8 @@ export default {
       skills: ['cut', 'sort', 'uniq -c', 'pipes'],
       prepare: ['linux-pipes'],
       brief: 'The login page is getting hammered. `/var/log/nginx/access.log` has a few thousand requests from dozens of addresses. Failed logins show up as `POST /login` with status `401`.\n\nYou need to name the single address responsible for the most failed logins, and how many it made, so the team can block it.',
-      goal: 'Submit `HW{ip_count}`, for example `HW{192.0.2.1_57}`, using the IP with the most 401 responses and its exact count.',
-      flag: 'Z+rmWE5Ib1oRYGvmP0uvuqbCJjTy',
+      goal: 'Submit `SOC{ip_count}`, for example `SOC{192.0.2.1_57}`, using the IP with the most 401 responses and its exact count.',
+      flag: 'IyoezDkVn4FicYosUT/la0m//4Ez+g==',
       workspace: () => {
         const r = random(9001);
         const pool = Array.from({ length: 40 }, () => `${r.pick([10, 172, 192, 198, 203])}.${r.int(0, 255)}.${r.int(0, 255)}.${r.int(1, 254)}`);
@@ -512,7 +512,7 @@ export default {
       prepare: ['linux-files'],
       brief: 'You have a firmware image from a cheap network camera that your company is thinking of buying in bulk. Before anyone signs, you have been asked to check whether the vendor left anything sensitive inside. Rumour says there is a support key baked in, but it is not stored as plain text.',
       goal: 'Find the support key in `camera.bin`, decode it, and submit the flag.',
-      flag: 'DzDGj3H8RYmI2AQNV+xxNJu8Na7gx/NbnFaUQAimWA==',
+      flag: '/hOhcjI2xNdNIkXm2Dz2gC/FzNOH9YofF0P21dzXqR0=',
       workspace: (flag) => ({
         type: 'shell',
         motd: 'Firmware dump: ~/camera.bin\n',
@@ -540,7 +540,7 @@ export default {
       prepare: ['linux-reading', 'linux-search'],
       brief: 'A confidential report has gone missing from `/srv/reports`. The only person who touched that folder recently is `jordan`, and the original file has been deleted. Bash saves the commands each user types to a file in their home folder, and on this badly configured server, everyone can read everyone else\'s.',
       goal: 'Work out where the report went and submit the flag inside it.',
-      flag: 'KywxaGp9c85pe/KxBS/wQpim06m78KZbiif/1r1DZHo71/Zy',
+      flag: 'uVkz7jzT4PLgJ1CVJ0fsY4UZhd1p+aH311ANpX9TBe5KjJk/xg==',
       workspace: (flag) => ({
         type: 'shell',
         motd: 'Users on this machine have folders under /home.\n',
@@ -574,7 +574,7 @@ export default {
       prepare: ['linux-permissions', 'linux-search'],
       brief: 'You have just joined the audit team and been added to a group on this server, but nobody told you which folders it opens up. Somewhere on the system is a folder only that group can read.',
       goal: 'Find the folder your group gives you access to and submit the flag stored there.',
-      flag: 'xarliobJHNGM/Y3IYY1w2IoPhzm7WL1AoSVDxoU=',
+      flag: 'TFPr01sacatZ56O2V0uD7clYD1O2Q5PCCwxJUhaQ',
       workspace: (flag) => ({
         type: 'shell',
         motd: 'Welcome to the team. You now have extra access on this machine.\n',
@@ -607,7 +607,7 @@ export default {
       prepare: ['linux-files', 'linux-pipes'],
       brief: 'A script on this server stores a note in `~/blob.txt`. It was not encrypted, only transformed several times in a row, and nobody wrote down which transformations or in what order.\n\nEach layer leaves clues in what the data looks like. Work out the outermost layer, undo it, look again, and repeat.',
       goal: 'Undo every layer of `blob.txt` and submit the flag.',
-      flag: 'u/CI4aVHXPp60zRdwOD3NssPr03W61xSvGlDITJO6+c=',
+      flag: 'fTfS8SMiNLFcVsmggIEw5SavaVISRPk0a6bIsTAGywxg',
       workspace: (flag) => {
         const b64 = toBase64(utf8(flag));
         const reversed = [...b64].reverse().join('');

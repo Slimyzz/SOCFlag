@@ -241,8 +241,8 @@ export function buildFileSystem(spec = {}, { users, now, commands = [] } = {}) {
   const base = {
     '/bin/': {}, '/usr/bin/': {}, '/etc/': {}, '/tmp/': { mode: 0o1777 }, '/var/log/': {}, '/root/': { mode: 0o700 },
     '/home/': {}, '/dev/': {},
-    '/etc/hostname': 'hiddenwell\n',
-    '/etc/os-release': 'NAME="HiddenWell Linux"\nVERSION="3.0 (practice)"\nID=hiddenwell\n'
+    '/etc/hostname': 'socflag\n',
+    '/etc/os-release': 'NAME="SOCFlag Linux"\nVERSION="3.0 (practice)"\nID=socflag\n'
   };
   const userList = Object.values(fs.users);
   base['/etc/passwd'] = userList.map((u) => `${u.name}:x:${u.uid}:${u.uid}:${u.gecos ?? ''}:${u.home}:${u.shell ?? '/bin/bash'}`).join('\n') + '\n';
@@ -251,7 +251,7 @@ export function buildFileSystem(spec = {}, { users, now, commands = [] } = {}) {
     if (user.uid >= 1000) base[`${user.home}/`] = { owner: user.name, group: user.groups[0], mode: 0o755 };
   }
   for (const name of commands) {
-    base[`/usr/bin/${name}`] = { content: Uint8Array.of(0x7f, 0x45, 0x4c, 0x46, 2, 1, 1, 0, ...utf8(`hiddenwell builtin: ${name}`)), mode: 0o755, mtime: fs.now - 400 * day };
+    base[`/usr/bin/${name}`] = { content: Uint8Array.of(0x7f, 0x45, 0x4c, 0x46, 2, 1, 1, 0, ...utf8(`socflag builtin: ${name}`)), mode: 0o755, mtime: fs.now - 400 * day };
   }
 
   const entries = Object.entries({ ...base, ...spec }).sort(([a], [b]) => a.split('/').length - b.split('/').length || a.localeCompare(b));

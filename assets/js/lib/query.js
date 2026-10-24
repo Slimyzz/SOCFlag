@@ -1,4 +1,4 @@
-// HQL, the HiddenWell query language. It borrows the shape of the search
+// HQL, the SOCFlag query language. It borrows the shape of the search
 // languages used in real SIEMs (Splunk SPL in particular): a search
 // expression, then a pipeline of commands.
 //

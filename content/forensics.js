@@ -333,8 +333,8 @@ export default {
       skills: ['file', 'signatures', 'grep'],
       prepare: ['forensics-signatures'],
       brief: 'A USB stick found on a desk in a restricted area holds a camera folder with 48 photos. The owner says it only has holiday pictures. One of the files is not a picture at all.',
-      goal: 'Find the file in `/evidence/usb/DCIM` that is not really an image and submit its file name as `HW{name}`.',
-      flag: 'aNYdUUi4N63GfI4vCMpmnw==',
+      goal: 'Find the file in `/evidence/usb/DCIM` that is not really an image and submit its file name as `SOC{name}`.',
+      flag: 'iVCnsLvakPAjPxEPeLyFu7I=',
       workspace: () => {
         const r = random(48);
         const files = {};
@@ -361,8 +361,8 @@ export default {
       skills: ['exiftool', 'PDF metadata', 'strings'],
       prepare: ['forensics-metadata'],
       brief: 'A confidential board paper appeared on a public forum as a PDF. Larkfield\'s document system records who exported each PDF, but whoever leaked this one re-saved it. The document metadata survived anyway. The leaked copy and three internal versions are in `/evidence/leak`.',
-      goal: 'Find the author recorded in the leaked file `board-paper-leaked.pdf` and submit it as `HW{author}`.',
-      flag: '5fKnpY7QscWC2pw=',
+      goal: 'Find the author recorded in the leaked file `board-paper-leaked.pdf` and submit it as `SOC{author}`.',
+      flag: 'sobplElxyKnpB7oq',
       workspace: () => ({
         type: 'shell',
         cwd: '/evidence/leak',
@@ -390,8 +390,8 @@ export default {
       skills: ['sha256sum -c', 'manifests', 'chain of custody'],
       prepare: ['forensics-handling'],
       brief: 'Evidence from a contractor\'s laptop was collected two weeks ago, and the collecting analyst wrote a SHA-256 manifest at the time. Since then the copy has passed through several hands. Before it goes to the legal team, someone has to confirm that every file is still exactly as collected.',
-      goal: 'Verify the evidence against `MANIFEST.sha256` and submit the path of the file that no longer matches, exactly as the manifest lists it, as `HW{path}`, for example `HW{mail/export_001.txt}`.',
-      flag: 'alWc5K835lyQ7fW1dM/RTa8DZGz/',
+      goal: 'Verify the evidence against `MANIFEST.sha256` and submit the path of the file that no longer matches, exactly as the manifest lists it, as `SOC{path}`, for example `SOC{mail/export_001.txt}`.',
+      flag: 'HfduHUR7KZG13MbRIjCaDuu66YosSg==',
       workspace: () => {
         const r = random(256);
         const files = {};
@@ -424,8 +424,8 @@ export default {
       skills: ['sha256sum', 'grep -f', 'hash sets'],
       prepare: ['forensics-hashing'],
       brief: 'A user\'s Downloads folder has 60 files in it, and threat intelligence has shared a list of 200 hashes linked to a campaign targeting your sector. One of the files on the laptop is on that list. There is also a file whose name appears on the list, which is exactly the kind of thing that sends investigators the wrong way.',
-      goal: 'Find the file in `~/Downloads` whose SHA-256 is on `/intel/campaign.sha256` and submit its name as `HW{name}`.',
-      flag: 'qk8Hn7vY80gMzIX/d7WCBwTZBzyVxfjZqJ4=',
+      goal: 'Find the file in `~/Downloads` whose SHA-256 is on `/intel/campaign.sha256` and submit its name as `SOC{name}`.',
+      flag: 'c7JJ6dVtgVS4pzUM16o95/eLGeghI9tgjDkF',
       workspace: () => {
         const r = random(6060);
         const files = {};
@@ -460,7 +460,7 @@ export default {
       prepare: ['forensics-metadata'],
       brief: 'A screenshot was posted to a public image board, and a monitoring service flagged it because the same account has leaked Larkfield material before. The image itself shows nothing sensitive. The analyst who looked at it wondered whether the file carries anything besides the picture.',
       goal: 'Examine `/evidence/board/screenshot.png`, find the text hidden in its metadata, decode it and submit the flag.',
-      flag: 'HvMKZd3y+LZ18FPgEsS4v/68poIJzGsQ/jbmXax6ZL6WaSRLms/6EOio',
+      flag: 'P4rO1h9nzAWjxz8NBINrXg+ofSZC+GnQkockWCdY8MRKP/zAMVA9xjURIQ==',
       workspace: (flag) => ({
         type: 'shell',
         cwd: '/evidence/board',
@@ -485,8 +485,8 @@ export default {
       skills: ['find -newermt', 'ls --full-time', 'timelines'],
       prepare: ['forensics-timeline'],
       brief: 'The web server logs show an attacker\'s first request at 02:41 UTC on 13 March 2026, and the server was taken offline at 03:00. You have a copy of the web root with its original timestamps. The team needs to know what the attacker touched, starting with the very first file they changed.',
-      goal: 'Find every file under `/srv/www` modified between 02:41 and 03:00 UTC on 13 March 2026, and submit the full path of the earliest one as `HW{path}`.',
-      flag: 'ofnPi4bnadxsGzAipYH2JgxvyLWXrJBz0h4PTahCz2rZy8c92g==',
+      goal: 'Find every file under `/srv/www` modified between 02:41 and 03:00 UTC on 13 March 2026, and submit the full path of the earliest one as `SOC{path}`.',
+      flag: '/mWRVFaZQsBNaPD1TGPEr5lSEox8F2cO2vpxl3W4iW8PBxpkh7w=',
       workspace: () => {
         const r = random(241);
         const files = {};
@@ -519,8 +519,8 @@ export default {
       skills: ['binwalk', 'dd', 'carving', 'sha256sum'],
       prepare: ['forensics-carving', 'forensics-hashing'],
       brief: 'A memory card was formatted before it was seized, so there is no filesystem left to list its files. The raw image is in `/evidence/card.img`. Formatting removed the index, not the data, so the files are still in there, packed one after another.\n\nThe legal team only cares about the document on the card, and they need its hash to compare with a copy they received from another source.',
-      goal: 'Carve the PDF out of the card image exactly, hash it, and submit the first 12 characters of its SHA-256 as `HW{hash}`.',
-      flag: 'Z9dZPZ31LzQ9kwK1/UEejg==',
+      goal: 'Carve the PDF out of the card image exactly, hash it, and submit the first 12 characters of its SHA-256 as `SOC{hash}`.',
+      flag: '6yGXgIfmxfOfCOILSHgQjDI=',
       workspace: () => {
         const parts = [
           new Uint8Array(512),
