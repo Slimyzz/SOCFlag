@@ -1,99 +1,69 @@
-# HiddenWell
+<p align="center">
+  <img src="docs/logo.svg" width="88" alt="HiddenWell logo">
+</p>
 
-**HiddenWell is a free, browser-only platform for learning defensive cybersecurity by doing it.** You read a short lesson, try the idea in the same activity, and then investigate synthetic evidence to capture a flag. Everything runs in your browser. There is no server to talk to, nothing to install, and no account to create.
+<h1 align="center">HiddenWell</h1>
 
-> **Live demo:** _add your Cloudflare Pages URL here once deployed_
+<p align="center">
+  <b>A blue-team CTF that runs entirely in your browser.</b><br>
+  Investigate logs, phishing emails, files and packet captures. Find the flag.
+</p>
 
-The focus is blue-team work: analysing logs, email, files and network traffic to work out what happened, rather than attacking systems. Learners investigate realistic but entirely synthetic evidence; there is no offensive tooling and no exploit code anywhere in the project.
+<p align="center">
+  <img src="https://img.shields.io/badge/challenges-56-f2d04b?style=flat-square&labelColor=15202b" alt="56 challenges">
+  <img src="https://img.shields.io/badge/lessons-44-8aabff?style=flat-square&labelColor=15202b" alt="44 lessons">
+  <img src="https://img.shields.io/badge/dependencies-0-63c48f?style=flat-square&labelColor=15202b" alt="zero dependencies">
+  <img src="https://img.shields.io/badge/license-MIT-e3e8ed?style=flat-square&labelColor=15202b" alt="MIT license">
+</p>
 
-## What is inside
+<p align="center">
+  <img src="docs/screenshots/home.png" alt="HiddenWell home page" width="900">
+</p>
 
-Eight topics, worked in order, each a run of short lessons followed by capture-the-flag challenges. **44 lessons and 56 challenges** in total.
+## What it is
 
-| Topic | What you investigate |
+Short lessons, then capture-the-flag challenges built on synthetic evidence. No install, no account, no server. Your progress stays in your browser.
+
+| Topic | You investigate |
 | --- | --- |
-| **Linux fundamentals** | The terminal, files, permissions, and pipelines, in a real in-browser shell |
-| **Log investigation** | Authentication, web and Windows logs in a SIEM: brute force, spraying, detections, timelines |
-| **Email and phishing analysis** | Headers, SPF/DKIM/DMARC, lookalike domains, links and attachment triage |
-| **File forensics** | Signatures, hashing, metadata, file timelines, carving, and evidence integrity |
-| **Network traffic analysis** | Packet captures: handshakes, scans, DNS, cleartext protocols, and traffic patterns |
-| **Secure code review** | Reading code as a defender: injection, XSS, access control, secrets and path handling |
-| **CVE case studies** | How flaws are scored and prioritised, and how landmark vulnerabilities were detected and fixed |
-| **Incident response capstone** | One incident, investigated end to end across the mailbox, SIEM, packet capture and host |
+| Linux | Files, permissions and pipelines in a real in-browser shell |
+| Logs | Brute force, password spraying and beacons in a SIEM |
+| Email | Headers, SPF/DKIM/DMARC, lookalike domains, attachments |
+| Forensics | Signatures, hashes, metadata, timelines, carving |
+| Network | Handshakes, scans, DNS tunnelling, cleartext, exfiltration |
+| Code review | Injection, XSS, access control, secrets, path traversal |
+| CVEs | KEV triage, Log4Shell, WannaCry, exposure windows |
+| Capstone | One incident, end to end, across every source |
 
-Each challenge hides a flag that looks like `HW{...}`. There are graded checks inside lessons, local hints, a write-up after each solve (how it works, why it matters, how to prevent it), and a spaced-repetition review deck for the key terms. Progress is saved in your browser only.
+## Inside
 
-## Screenshots
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/siem.png" alt="SIEM search"><p align="center"><b>SIEM</b> with its own query language</p></td>
+    <td width="50%"><img src="docs/screenshots/packets.png" alt="Packet capture viewer"><p align="center"><b>Packet viewer</b> with filters and follow stream</p></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/capstone.png" alt="Incident response capstone"><p align="center"><b>Capstone</b> across mailbox, SIEM and capture</p></td>
+    <td width="50%"><img src="docs/screenshots/challenges.png" alt="Challenge board"><p align="center"><b>56 challenges</b>, easy to hard</p></td>
+  </tr>
+</table>
 
-_Add screenshots to `docs/screenshots/` and reference them here, for example:_
-
-```
-docs/screenshots/home.png        the landing page
-docs/screenshots/siem.png        the SIEM search workspace
-docs/screenshots/packets.png     the packet capture viewer
-docs/screenshots/challenge.png   a challenge with its write-up
-```
-
-## Run it locally
-
-Requirements: **Node.js 20 or later**. There are no dependencies to install and no build step.
+## Run it
 
 ```bash
-npm start
+npm start      # http://localhost:8080
+npm test       # 99 tests
 ```
 
-Then open **http://localhost:8080**. `npm start` runs a tiny static file server (`tools/serve.js`); any static server pointed at the project root works just as well, because the site is plain HTML, CSS and ES modules.
-
-## Tests
-
-```bash
-npm test
-```
-
-The suite (`node --test`) covers:
-
-- **Content validation** – every section, lesson and challenge is well formed, and ids and cross-references are valid.
-- **Solvability** – every challenge is solved through its intended path against its own generated data, and the result matches the sealed flag.
-- **The flag guarantee** – no plaintext flag appears anywhere in the shipped source.
-- **The query language** – unit tests for the SIEM search language (HQL).
-- **The shell** – unit tests for the in-browser Linux shell and its commands.
+Node 20+. No dependencies, no build step. Deploys as a static site.
 
 ## How it works
 
-HiddenWell is a static site (version 3): `index.html` plus ES modules, with no framework and no build.
-
-```text
-index.html                 shell, routed with the URL hash
-assets/js/
-  app.js                   router and every page
-  core/                    local progress store, DOM and Markdown helpers
-  lib/                     bytes, hashing, flag sealing, the SIEM query language, email parsing
-  shell/                   the in-browser Linux shell (virtual filesystem, parser, ~80 commands)
-  ui/                      the terminal, lesson blocks, and the SIEM, mailbox, packet and tools workspaces
-content/
-  *.js                     the curriculum: one file per topic, each with lessons and challenges
-  index.js                 registers the topics in order
-tools/serve.js             the zero-dependency dev server
-test/                      the test suite and the intended solutions
-```
-
-Every workspace (the terminal, the SIEM, the mailbox, the packet viewer, the analyst tools) is a small program running on the page, working on evidence generated deterministically in the browser. Nothing reaches the network or your real files.
-
-### About the flags
-
-Because the whole site runs on the visitor's computer, a determined person could dig the answers out of the code. The guarantee HiddenWell makes is narrow and honest: **no plaintext flag exists anywhere in the source.** Flags are stored sealed (XOR'd with a keystream derived from the challenge id, then Base64), so searching the source for `HW{` finds nothing, and the page unseals a flag only to check your answer. That is enough for a learning lab; it is not, and does not claim to be, real secrecy. A test enforces the guarantee on every build.
-
-Flags are never committed in plaintext. The author-only scripts that produce the sealed values live **outside** this repository.
-
-## Deploy
-
-The site is static, so it hosts anywhere. It is built for **Cloudflare Pages**:
-
-- Framework preset: **None**. Build command: **(none)**. Output directory: **`/`** (the repository root).
-- `_headers` ships a strict Content Security Policy and related security headers. Because the app loads only its own files, the policy is `default-src 'none'` with narrow allowances for the site's own scripts, styles, fonts and images.
+- **Everything is client side.** The shell, SIEM, mailbox and packet viewer are plain ES modules working on evidence generated in the page.
+- **No plaintext flags.** Flags are sealed in the source and only unsealed to check an answer. A test fails the build if one ever leaks.
+- **Every challenge is proven solvable.** The test suite solves all 56 through their intended path.
+- **Locked down.** Strict Content Security Policy, no network access, no tracking.
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
-
-Fonts are bundled under the SIL Open Font License: **Atkinson Hyperlegible** by the Braille Institute, and **JetBrains Mono**.
+MIT. Fonts: Atkinson Hyperlegible and JetBrains Mono (SIL OFL).

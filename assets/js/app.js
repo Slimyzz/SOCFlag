@@ -162,7 +162,7 @@ function viewSection(id) {
     const solved = store.solved(challenge.id);
     return h('li', { class: solved ? 'seq-done' : '' }, h('a', { href: `#/challenge/${challenge.id}` },
       h('span', { class: 'seq-num' }, solved ? tick() : ''),
-      h('span', {}, h('span', { class: 'seq-title' }, challenge.title), h('span', { class: 'seq-sub' }, challenge.goal)),
+      h('span', {}, h('span', { class: 'seq-title' }, challenge.title), h('span', { class: 'seq-sub', html: inline(challenge.goal) })),
       h('span', { class: 'seq-meta' }, level(challenge.difficulty), h('br'), `${challenge.points} points`)));
   });
   const next = section.lessons.find((l) => !store.lessonDone(l.id)) ?? null;
@@ -287,7 +287,7 @@ function viewChallenges() {
       (!q || `${c.title} ${c.goal} ${c.skills.join(' ')}`.toLowerCase().includes(q)));
     summary.textContent = `Showing ${rows.length} of ${allChallenges.length}.`;
     fill(tbody, ...rows.map((c) => h('tr', {},
-      h('td', {}, h('a', { href: `#/challenge/${c.id}` }, c.title), h('span', { class: 'sub' }, c.goal)),
+      h('td', {}, h('a', { href: `#/challenge/${c.id}` }, c.title), h('span', { class: 'sub', html: inline(c.goal) })),
       h('td', { class: 'hide-narrow' }, c.section.short),
       h('td', {}, level(c.difficulty)),
       h('td', { class: 'num' }, String(c.points)),
