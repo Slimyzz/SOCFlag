@@ -1,6 +1,6 @@
 // Mounts the hands-on part of a lesson or challenge next to the text.
 // Every workspace runs inside this page: no server, no network.
-import { h } from '../core/dom.js';
+import { h, fill } from '../core/dom.js';
 import { createMachine } from '../shell/index.js';
 import { mountTerminal } from './terminal.js';
 
@@ -38,7 +38,7 @@ async function mountSpec(body, spec, report, extra) {
     case 'case':
       return mountCase(body, spec, report, extra);
     default:
-      body.replaceChildren(h('p', { class: 'empty' }, `Unknown workspace type ${spec.type}`));
+      fill(body, h('p', { class: 'empty' }, `Unknown workspace type ${spec.type}`));
       return {};
   }
 }
@@ -64,7 +64,7 @@ async function mountCase(body, spec, report, extra) {
     report({ type: 'case-tab', tab: i });
   }
   extra.replaceChildren();
-  body.replaceChildren(h('div', { class: 'case' }, h('div', { class: 'case-tabs', role: 'tablist', 'aria-label': 'Evidence sources' }, buttons), panes));
+  fill(body, h('div', { class: 'case' }, h('div', { class: 'case-tabs', role: 'tablist', 'aria-label': 'Evidence sources' }, buttons), panes));
   await show(0);
   return caseHandle;
 }
@@ -78,7 +78,7 @@ export async function mountWorkspace(host, rawSpec, { flag = '', onActivity } = 
     h('div', { class: 'workspace-bar' }, h('h2', {}, spec.title ?? TITLES[spec.type]), h('span', { class: 'row' }, extra, resetButton)),
     body,
     spec.note !== false ? h('p', { class: 'workspace-note' }, spec.note ?? 'Runs in this page only. Nothing you do here leaves your browser.') : null);
-  host.replaceChildren(frame);
+  fill(host, frame);
 
   const log = [];
   let handle = {};

@@ -5,7 +5,7 @@
 //   command, then predict the result), answer (type a short answer),
 //   order (put steps in order), spot (click the vulnerable line),
 //   task (do something real in the workspace beside the lesson).
-import { h, md, mdNode, inline, escapeHtml } from '../core/dom.js';
+import { h, md, mdNode, inline, escapeHtml, fill } from '../core/dom.js';
 import { store } from '../core/store.js';
 
 const LETTERS = 'ABCDEFGH';
@@ -126,7 +126,7 @@ function order(block, id, ctx) {
   let locked = false;
 
   const render = () => {
-    list.replaceChildren(...items.map((item, i) => h('li', {},
+    fill(list, ...items.map((item, i) => h('li', {},
       h('span', { html: inline(item.text) }),
       locked ? null : h('span', { class: 'moves' },
         h('button', { class: 'btn small', type: 'button', disabled: i === 0, 'aria-label': `Move "${item.text}" up`, onclick: () => move(i, -1) }, 'Up'),

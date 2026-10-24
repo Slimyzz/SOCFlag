@@ -1,4 +1,4 @@
-import { h, md, mdNode, inline, announce, escapeHtml } from './core/dom.js';
+import { h, md, mdNode, inline, announce, escapeHtml, fill } from './core/dom.js';
 import { store, writePref } from './core/store.js';
 import { unseal, normaliseFlag } from './lib/seal.js';
 import { renderBlock, renderTerms, isGraded, blockId } from './ui/blocks.js';
@@ -42,7 +42,7 @@ function earnedPoints() {
 function updateScore() {
   const score = document.getElementById('score');
   const points = earnedPoints();
-  score.replaceChildren(...(points ? [h('strong', {}, String(points)), ' points'] : []));
+  fill(score, ...(points ? [h('strong', {}, String(points)), ' points'] : []));
 }
 
 function nextStep() {
@@ -73,10 +73,10 @@ function homeDemo() {
   const task = h('div', { class: 'demo-task' }, h('span', {}, 'Find the hidden note'), status);
   const screen = h('div');
   const steps = [
-    { test: (c) => /^ls\b/.test(c) && !/-\w*a/.test(c), next: () => status.replaceChildren('Now read ', h('strong', {}, 'readme.txt'), ' with cat') },
-    { test: (c) => /^cat\b.*readme/.test(c), next: () => status.replaceChildren('Try ', h('strong', {}, 'ls -a')) },
-    { test: (c) => /^ls\b.*-\w*a/.test(c), next: () => status.replaceChildren('Read it: ', h('strong', {}, 'cat .note')) },
-    { test: (c) => /^cat\b.*\.note/.test(c), next: () => status.replaceChildren(h('span', { class: 'done' }, 'Found it')) }
+    { test: (c) => /^ls\b/.test(c) && !/-\w*a/.test(c), next: () => fill(status, 'Now read ', h('strong', {}, 'readme.txt'), ' with cat') },
+    { test: (c) => /^cat\b.*readme/.test(c), next: () => fill(status, 'Try ', h('strong', {}, 'ls -a')) },
+    { test: (c) => /^ls\b.*-\w*a/.test(c), next: () => fill(status, 'Read it: ', h('strong', {}, 'cat .note')) },
+    { test: (c) => /^cat\b.*\.note/.test(c), next: () => fill(status, h('span', { class: 'done' }, 'Found it')) }
   ];
   let step = 0;
   mountTerminal(screen, machine, {
@@ -229,16 +229,16 @@ async function viewLesson(id) {
       : section.challenges[0] ? h('a', { class: `btn ${done ? 'primary' : ''}`, href: `#/challenge/${section.challenges[0].id}` }, 'Start the challenges') : null;
     const related = section.challenges.filter((c) => (c.prepare ?? []).includes(lesson.id) && !store.solved(c.id));
     if (done) {
-      endBox.replaceChildren(
+      fill(endBox, 
         h('h2', {}, 'Lesson complete'),
         h('p', { class: 'muted' }, lesson.terms?.length ? `Its ${lesson.terms.length} key terms are now in your review deck.` : 'Nice work.'),
         related.length ? h('p', {}, 'Ready for a challenge on this? ', ...related.slice(0, 2).flatMap((c, i) => [i ? ' or ' : '', h('a', { href: `#/challenge/${c.id}` }, c.title)])) : null,
         h('div', { class: 'row' }, forward, h('a', { class: 'btn quiet', href: `#/learn/${section.id}` }, 'Back to topic')));
     } else if (!graded.length) {
-      endBox.replaceChildren(h('div', { class: 'row' }, h('button', { class: 'btn primary', type: 'button', onclick: () => { complete(); refresh(); updateScore(); } }, 'Mark as done'), forward));
+      fill(endBox, h('div', { class: 'row' }, h('button', { class: 'btn primary', type: 'button', onclick: () => { complete(); refresh(); updateScore(); } }, 'Mark as done'), forward));
     } else {
       const left = remaining();
-      endBox.replaceChildren(h('p', { class: 'muted' }, `${left} ${left === 1 ? 'check' : 'checks'} left in this lesson. Answer them to finish it.`), h('div', { class: 'row' }, forward));
+      fill(endBox, h('p', { class: 'muted' }, `${left} ${left === 1 ? 'check' : 'checks'} left in this lesson. Answer them to finish it.`), h('div', { class: 'row' }, forward));
     }
   };
 
@@ -259,7 +259,7 @@ async function viewLesson(id) {
     endBox);
 
   const layout = h('div', { class: `activity ${lesson.workspace ? '' : 'single'}` }, content, lesson.workspace ? sideHost : null);
-  main.replaceChildren(layout);
+  fill(main, layout);
   refresh();
   if (lesson.workspace) {
     activeWorkspace = await mountWorkspace(sideHost, lesson.workspace, {
@@ -286,13 +286,13 @@ function viewChallenges() {
       (filters.status === 'all' || (filters.status === 'solved') === !!store.solved(c.id)) &&
       (!q || `${c.title} ${c.goal} ${c.skills.join(' ')}`.toLowerCase().includes(q)));
     summary.textContent = `Showing ${rows.length} of ${allChallenges.length}.`;
-    tbody.replaceChildren(...rows.map((c) => h('tr', {},
+    fill(tbody, ...rows.map((c) => h('tr', {},
       h('td', {}, h('a', { href: `#/challenge/${c.id}` }, c.title), h('span', { class: 'sub' }, c.goal)),
       h('td', { class: 'hide-narrow' }, c.section.short),
       h('td', {}, level(c.difficulty)),
       h('td', { class: 'num' }, String(c.points)),
       h('td', { class: 'status' }, store.solved(c.id) ? h('span', { class: 'solved-mark' }, 'Solved') : h('span', { class: 'muted' }, store.opened(c.id) ? 'Started' : '')))));
-    if (!rows.length) tbody.replaceChildren(h('tr', {}, h('td', { colspan: 5, class: 'muted' }, 'No challenges match those filters.')));
+    if (!rows.length) fill(tbody, h('tr', {}, h('td', { colspan: 5, class: 'muted' }, 'No challenges match those filters.')));
   };
   const select = (key, label, options) => h('label', {}, h('span', {}, label),
     h('select', { class: 'field', onchange: (e) => { filters[key] = e.target.value; render(); } },
@@ -343,12 +343,12 @@ async function viewChallenge(id) {
     const solved = store.solved(id);
     if (solved) {
       form.hidden = true;
-      resultBox.replaceChildren(
+      fill(resultBox, 
         h('div', { class: 'solved-banner' }, h('strong', {}, 'Solved.'), h('span', {}, 'The flag was ', h('mark', { class: 'mono' }, flag), '.'), h('span', { class: 'muted' }, solved.hints ? `${solved.hints} ${solved.hints === 1 ? 'hint' : 'hints'} used.` : 'No hints used.')),
         writeup(),
         h('div', { class: 'next-up' }, next ? h('a', { class: 'btn primary', href: `#/challenge/${next.id}` }, `Next: ${next.title}`) : null, h('a', { class: 'btn', href: '#/challenges' }, 'All challenges')));
     } else if (revealed) {
-      resultBox.replaceChildren(writeup());
+      fill(resultBox, writeup());
     }
   };
 
@@ -356,7 +356,7 @@ async function viewChallenge(id) {
     const used = store.hintsUsed(id);
     const shown = challenge.hints.slice(0, used);
     const more = used < challenge.hints.length;
-    hintsBox.replaceChildren(
+    fill(hintsBox, 
       h('h2', { id: 'hints-title' }, 'Hints'),
       shown.length ? null : h('p', { class: 'muted small' }, `There are ${challenge.hints.length}. Each one gives away a bit more than the last, so try for a while first.`),
       shown.map((hint, i) => h('div', { class: 'hint' }, h('b', {}, `Hint ${i + 1}`), h('div', { html: md(hint) }))),
@@ -400,7 +400,7 @@ async function viewChallenge(id) {
     resultBox,
     hintsBox);
 
-  main.replaceChildren(h('div', { class: 'activity' }, content, sideHost));
+  fill(main, h('div', { class: 'activity' }, content, sideHost));
   renderHints();
   renderResult();
   activeWorkspace = await mountWorkspace(sideHost, challenge.workspace, { flag });
@@ -436,7 +436,7 @@ function viewReview() {
     const card = due[i];
     if (!card) {
       const upcoming = cards.filter((c) => c.due > Date.now()).sort((a, b) => a.due - b.due)[0];
-      stage.replaceChildren(h('div', { class: 'empty' }, h('p', {}, 'You are done for now.'), upcoming ? h('p', {}, `Next card is due ${new Date(store.card(upcoming.key)?.due ?? upcoming.due).toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })}.`) : null));
+      fill(stage, h('div', { class: 'empty' }, h('p', {}, 'You are done for now.'), upcoming ? h('p', {}, `Next card is due ${new Date(store.card(upcoming.key)?.due ?? upcoming.due).toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })}.`) : null));
       return;
     }
     const answer = h('div', { class: 'flashcard-def', hidden: true, html: md(card.definition) });
@@ -444,13 +444,13 @@ function viewReview() {
     const reveal = h('button', { class: 'btn primary', type: 'button' }, 'Show the answer');
     reveal.addEventListener('click', () => {
       answer.hidden = false;
-      actions.replaceChildren(
+      fill(actions, 
         h('button', { class: 'btn primary', type: 'button', onclick: () => { store.reviewCard(card.key, true); i++; show(); } }, 'I knew it'),
         h('button', { class: 'btn', type: 'button', onclick: () => { store.reviewCard(card.key, false); i++; show(); } }, 'Not yet'));
       actions.querySelector('button').focus();
     });
-    actions.replaceChildren(reveal);
-    stage.replaceChildren(
+    fill(actions, reveal);
+    fill(stage, 
       h('p', { class: 'muted small' }, `Card ${i + 1} of ${due.length} due now`),
       h('div', { class: 'flashcard' },
         h('div', { class: 'flashcard-face' },
@@ -470,7 +470,7 @@ function viewReview() {
 async function viewTools() {
   setTitle('Tools');
   const host = h('div');
-  main.replaceChildren(
+  fill(main, 
     h('header', { class: 'page-head' }, h('h1', {}, 'Analyst tools'), h('p', { class: 'lede' }, 'Small utilities for triage: decode what you find, pull indicators out of a message, convert timestamps, check whether an address sits inside a range. Use "Output to input" when data has been wrapped more than once.')),
     host);
   const { mountTools } = await import('./ui/tools.js');
@@ -632,7 +632,7 @@ async function route() {
   document.getElementById('nav').classList.remove('open');
   document.querySelector('.menu-button').setAttribute('aria-expanded', 'false');
   const result = match ? await match.view(...match.m.slice(1)) : notFound();
-  if (result) main.replaceChildren(...[result].flat());
+  if (result) fill(main, ...[result].flat());
   if (path !== lastPath) {
     window.scrollTo(0, 0);
     if (lastPath !== null) main.focus({ preventScroll: true });

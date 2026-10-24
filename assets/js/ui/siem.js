@@ -1,6 +1,6 @@
 // A small SIEM search screen: query bar, event timeline, field summary and
 // results. Data is generated per lab, so every search runs locally.
-import { h } from '../core/dom.js';
+import { h, fill } from '../core/dom.js';
 import { runQuery, summarise, QueryError, COMMAND_HELP } from '../lib/query.js';
 
 export function formatTime(ms) {
@@ -47,7 +47,7 @@ export function mountSiem(host, spec, report) {
       h('dl', {}, Object.entries(COMMAND_HELP).map(([name, text]) => [h('dt', {}, name), h('dd', {}, text)])),
       spec.examples?.length ? [h('p', { style: 'margin-top:.75rem;font-weight:700' }, 'Try:'), h('ul', {}, spec.examples.map((q) => h('li', {}, h('button', { class: 'linklike mono', type: 'button', onclick: () => { input.value = q; run(); } }, q))))] : null));
 
-  host.replaceChildren(h('div', { class: 'siem' },
+  fill(host, h('div', { class: 'siem' },
     form,
     h('p', { class: 'siem-sources' }, `Data: ${sources}. All times are UTC.`),
     help, status, fieldsBox, results));
@@ -61,7 +61,7 @@ export function mountSiem(host, spec, report) {
 
   function renderFields(rows) {
     const summary = summarise(rows.slice(0, 2000)).filter((f) => f.field !== 'index' || f.distinct > 1);
-    fieldsBox.replaceChildren(h('summary', {}, `Fields in these results (${summary.length})`),
+    fill(fieldsBox, h('summary', {}, `Fields in these results (${summary.length})`),
       h('div', { class: 'siem-field-list' }, summary.map((f) => h('div', { class: 'siem-field' },
         h('strong', {}, f.field), h('span', { class: 'muted' }, ` ${f.distinct} value${f.distinct === 1 ? '' : 's'}`),
         h('ul', {}, f.top.map(([value, count]) => h('li', {},
@@ -71,7 +71,7 @@ export function mountSiem(host, spec, report) {
 
   function renderEvents(rows) {
     const shown = rows.slice(0, 150);
-    results.replaceChildren(
+    fill(results, 
       histogram(rows),
       h('ol', { class: 'siem-events' }, shown.map((row) => {
         const fields = Object.entries(row).filter(([k]) => !['_raw', '_time'].includes(k));
@@ -85,7 +85,7 @@ export function mountSiem(host, spec, report) {
 
   function renderTable(rows, columns, timeColumns) {
     const shown = rows.slice(0, 500);
-    results.replaceChildren(h('div', { class: 'siem-table-wrap' }, h('table', { class: 'siem-table' },
+    fill(results, h('div', { class: 'siem-table-wrap' }, h('table', { class: 'siem-table' },
       h('thead', {}, h('tr', {}, columns.map((c) => h('th', {}, c)))),
       h('tbody', {}, shown.map((row) => h('tr', {}, columns.map((c) => h('td', {}, cell(row[c], c, timeColumns)))))))),
       rows.length > shown.length ? h('p', { class: 'muted small' }, `Showing ${shown.length} of ${rows.length} rows.`) : null);

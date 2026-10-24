@@ -15,10 +15,26 @@ export function h(tag, attrs = {}, ...children) {
     else if (key === 'dataset') Object.assign(el.dataset, value);
     else el.setAttribute(key, value === true ? '' : value);
   }
+  appendChildren(el, children);
+  return el;
+}
+
+// Appends children the forgiving way: arrays are flattened, null/undefined/false
+// are skipped, and anything that is not a Node becomes a text node.
+function appendChildren(el, children) {
   for (const child of children.flat(Infinity)) {
     if (child === null || child === undefined || child === false) continue;
     el.append(child instanceof Node ? child : document.createTextNode(String(child)));
   }
+}
+
+// Replaces an element's children with the same rules h() uses for its own.
+// The native replaceChildren does not flatten arrays or drop null, so passing
+// it a map result or a `cond ? node : null` turns them into "[object ...]" and
+// "null" text. Always go through this instead.
+export function fill(el, ...children) {
+  el.replaceChildren();
+  appendChildren(el, children);
   return el;
 }
 

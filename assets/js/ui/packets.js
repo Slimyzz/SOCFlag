@@ -1,6 +1,6 @@
 // A Wireshark-style capture viewer: packet list, display filters, packet
 // details with a payload hex dump, Follow Stream and a conversations table.
-import { h } from '../core/dom.js';
+import { h, fill } from '../core/dom.js';
 import { latin1, toHex, isPrintable } from '../lib/bytes.js';
 
 const PROTOCOLS = ['tcp', 'udp', 'icmp', 'arp', 'dns', 'http', 'tls', 'ftp', 'smtp', 'telnet', 'ssh', 'dhcp', 'smb'];
@@ -169,19 +169,19 @@ export function mountPackets(host, spec, report) {
     h('button', { class: 'btn small', type: 'button', onclick: () => conversations() }, 'Conversations'),
     h('button', { class: 'btn small', type: 'button', onclick: () => showList() }, 'Packet list'));
   const main = h('div');
-  host.replaceChildren(h('div', { class: 'pcap' }, filterForm, status, views, main));
+  fill(host, h('div', { class: 'pcap' }, filterForm, status, views, main));
 
   let visible = packets;
   let selected = packets[0];
 
   const showList = () => {
-    main.replaceChildren(list, detail);
+    fill(main, list, detail);
     renderRows();
     select(selected);
   };
 
   const renderRows = () => {
-    tbody.replaceChildren(...visible.slice(0, 2000).map((p) => {
+    fill(tbody, ...visible.slice(0, 2000).map((p) => {
       const row = h('tr', { tabindex: '0', 'aria-selected': String(p === selected), onclick: () => select(p), onkeydown: (e) => {
         if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
           e.preventDefault();
@@ -199,7 +199,7 @@ export function mountPackets(host, spec, report) {
 
   const select = (p) => {
     if (!p) {
-      detail.replaceChildren(h('div', {}, 'No packet selected.'));
+      fill(detail, h('div', {}, 'No packet selected.'));
       return;
     }
     selected = p;
@@ -214,7 +214,7 @@ export function mountPackets(host, spec, report) {
     if (p.http) layers.push(['Hypertext Transfer Protocol', p.payload?.split('\r\n\r\n')[0] ?? '']);
     if (p.tls) layers.push(['Transport Layer Security', `${p.tls.type ?? 'Application Data'}${p.tls.sni ? `\nServer Name Indication: ${p.tls.sni}` : ''}${p.tls.version ? `\nVersion: ${p.tls.version}` : ''}`]);
     if (p.notes) layers.push(['Notes', p.notes]);
-    detail.replaceChildren(
+    fill(detail, 
       h('div', {}, h('dl', {}, layers.map(([k, v]) => [h('dt', {}, k), h('dd', { style: 'white-space:pre-wrap' }, v)]))),
       h('div', {}, h('pre', {}, hexDump(latin1(p.payload ?? '')))));
     report({ type: 'select-packet', no: p.no });
@@ -248,7 +248,7 @@ export function mountPackets(host, spec, report) {
     const opener = packets.find((p) => streamKey(p) === key && p.flags === 'SYN');
     const client = opener ? opener.src : selected.sport > selected.dport ? selected.src : selected.dst;
     status.textContent = `Following ${selected.proto} stream ${selected.src}:${selected.sport} and ${selected.dst}:${selected.dport}. Red text was sent by the client, blue by the server.`;
-    main.replaceChildren(h('div', { class: 'stream-view', role: 'document' }, stream.map((p) => h('span', { class: p.src === client ? 'c' : 's' }, p.payload + (p.payload.endsWith('\n') ? '' : '\n')))));
+    fill(main, h('div', { class: 'stream-view', role: 'document' }, stream.map((p) => h('span', { class: p.src === client ? 'c' : 's' }, p.payload + (p.payload.endsWith('\n') ? '' : '\n')))));
     report({ type: 'follow', key, packets: stream.map((p) => p.no) });
   };
 
@@ -263,7 +263,7 @@ export function mountPackets(host, spec, report) {
       groups.set(pair, g);
     }
     status.textContent = `${groups.size} conversations in the displayed packets.`;
-    main.replaceChildren(h('div', { class: 'pcap-list', style: 'max-height:28rem' }, h('table', {},
+    fill(main, h('div', { class: 'pcap-list', style: 'max-height:28rem' }, h('table', {},
       h('thead', {}, h('tr', {}, ['Address A and B', 'Packets', 'Bytes', 'Duration (s)'].map((c) => h('th', {}, c)))),
       h('tbody', {}, [...groups.values()].sort((a, b) => b.bytes - a.bytes).map((g) => h('tr', {}, h('td', {}, g.pair), h('td', {}, String(g.packets)), h('td', {}, g.bytes.toLocaleString()), h('td', {}, (g.last - g.first).toFixed(2))))))));
     report({ type: 'conversations' });

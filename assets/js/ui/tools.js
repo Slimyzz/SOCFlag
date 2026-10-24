@@ -1,6 +1,6 @@
 // Analyst utilities: decoding, defanging, timestamps, hashing and pulling
 // indicators out of text. The same small jobs a SOC analyst does all day.
-import { h, copyText } from '../core/dom.js';
+import { h, copyText, fill } from '../core/dom.js';
 import { utf8, text, toHex, fromHex, toBase64, fromBase64, rot, isPrintable } from '../lib/bytes.js';
 import { md5, sha1, sha256 } from '../lib/hash.js';
 
@@ -155,7 +155,7 @@ export function mountTools(host, spec = {}, report = () => {}) {
     a.note ? h('p', { class: 'muted small', style: 'margin:.3rem 0 0' }, a.note) : null,
     h('pre', {}, a.content)));
 
-  host.replaceChildren(...artifacts, h('div', { class: 'bench' },
+  fill(host, ...artifacts, h('div', { class: 'bench' },
     h('div', { class: 'bench-ops', role: 'group', 'aria-label': 'Operation' }, buttons),
     h('div', {}, h('div', { class: 'bench-head' }, h('label', {}, 'Input'), h('span', { class: 'row' },
       h('button', { class: 'btn small', type: 'button', onclick: () => { input.value = output.textContent; run(); } }, 'Output to input'),

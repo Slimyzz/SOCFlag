@@ -1,7 +1,7 @@
 // A read-only mailbox for phishing analysis. Messages are never rendered as
 // HTML: the body is shown as text with every link's real destination, which
 // is how an analyst should look at a suspicious email anyway.
-import { h } from '../core/dom.js';
+import { h, fill } from '../core/dom.js';
 import { parseMessage, htmlToSafeText } from '../lib/mime.js';
 import { sha256 } from '../lib/hash.js';
 import { describeBytes } from '../shell/commands.js';
@@ -28,7 +28,7 @@ export function mountMail(host, spec, report) {
   const messages = spec.messages.map((raw, index) => ({ index, raw, ...parseMessage(raw) }));
   const list = h('ul', { class: 'mail-list', role: 'listbox', 'aria-label': 'Messages' });
   const view = h('div', { class: 'mail-view' });
-  host.replaceChildren(h('div', { class: 'mail' }, list, view));
+  fill(host, h('div', { class: 'mail' }, list, view));
 
   const tabs = ['Message', 'Headers', 'Source'];
   let current = null;
@@ -72,14 +72,14 @@ export function mountMail(host, spec, report) {
     } else {
       body = h('pre', { class: 'mail-source' }, m.raw);
     }
-    view.replaceChildren(
+    fill(view, 
       h('div', { class: 'mail-summary' },
         h('h3', {}, m.subject || '(no subject)'),
         h('dl', {}, h('dt', {}, 'From'), h('dd', {}, m.from), h('dt', {}, 'To'), h('dd', {}, m.to), h('dt', {}, 'Date'), h('dd', {}, m.date))),
       tabBar, h('div', { class: 'mail-pane', role: 'tabpanel' }, body));
   }
 
-  list.replaceChildren(...messages.map((m) => h('li', {
+  fill(list, ...messages.map((m) => h('li', {
     role: 'option', tabindex: '0', 'aria-selected': 'false',
     onclick: () => open(m),
     onkeydown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(m); } }

@@ -1,7 +1,7 @@
 // A lightweight terminal for the practice shell: a scrollback, a real <input>
 // for the current line (so mobile keyboards and screen readers work), history,
 // tab completion and basic ANSI colours.
-import { h } from '../core/dom.js';
+import { h, fill } from '../core/dom.js';
 
 const SGR_CLASSES = { 1: 'b', 31: 'red', 32: 'green', 33: 'yellow', 34: 'blue', 35: 'magenta', 36: 'cyan' };
 
@@ -38,14 +38,14 @@ export function mountTerminal(container, machine, { motd = '', onRun } = {}) {
   });
   const line = h('form', { class: 'term-line' }, promptEl, input);
   const screen = h('div', { class: 'term' }, output, line);
-  container.replaceChildren(screen);
+  fill(container, screen);
 
   let historyIndex = shell.history.length;
   let draft = '';
 
   const renderPrompt = (target) => {
     const p = shell.prompt();
-    target.replaceChildren(
+    fill(target, 
       h('span', { class: 'p-user' }, `${p.user}@${p.host}`), ':',
       h('span', { class: 'p-cwd' }, p.cwd), `${p.symbol} `
     );
